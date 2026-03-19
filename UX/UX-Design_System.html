@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MasalAI — Design System</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: #F4F2FF;
+    color: #1A0A2E;
+    padding: 40px 24px 80px;
+    min-height: 100vh;
+  }
+  .page { max-width: 860px; margin: 0 auto; }
+
+  /* Header */
+  .page-header { text-align: center; margin-bottom: 56px; }
+  .page-header .app-icon {
+    width: 72px; height: 72px; border-radius: 20px;
+    background: #5B3BCC; display: inline-flex;
+    align-items: center; justify-content: center;
+    font-size: 36px; margin-bottom: 16px;
+  }
+  .page-header h1 { font-size: 32px; font-weight: 600; letter-spacing: -1px; color: #1A0A2E; }
+  .page-header p { font-size: 15px; color: #6B5B95; margin-top: 6px; }
+
+  /* Section */
+  .section { margin-bottom: 48px; }
+  .section-title {
+    font-size: 11px; font-weight: 600; letter-spacing: .1em;
+    text-transform: uppercase; color: #9585C5;
+    margin-bottom: 20px; padding-bottom: 10px;
+    border-bottom: 1px solid #E8E3FF;
+  }
+
+  /* Color swatches */
+  .swatch-grid { display: flex; flex-wrap: wrap; gap: 12px; }
+  .swatch {
+    border-radius: 14px; padding: 16px 18px; min-width: 130px;
+    flex: 1;
+  }
+  .swatch-name { font-size: 12px; font-weight: 600; margin-bottom: 4px; }
+  .swatch-hex { font-size: 11px; opacity: .7; }
+  .swatch-role { font-size: 10px; margin-top: 6px; opacity: .6; text-transform: uppercase; letter-spacing: .05em; }
+
+  /* Typography */
+  .type-card {
+    background: #fff; border-radius: 16px; padding: 28px 32px;
+    border: 1px solid #E8E3FF;
+  }
+  .type-row { margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid #F0EDF9; }
+  .type-row:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+  .type-meta { font-size: 11px; color: #9585C5; margin-top: 5px; }
+
+  /* Component grid */
+  .comp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 600px) { .comp-grid { grid-template-columns: 1fr; } }
+  .comp-card {
+    background: #fff; border-radius: 16px; padding: 20px 22px;
+    border: 1px solid #E8E3FF;
+  }
+  .comp-name {
+    font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: .07em; color: #9585C5; margin-bottom: 14px;
+  }
+
+  /* Buttons */
+  .btn-primary {
+    background: #5B3BCC; color: #fff; border: none;
+    border-radius: 12px; padding: 13px 20px;
+    font-size: 15px; font-weight: 500; width: 100%;
+    cursor: pointer; font-family: inherit; margin-bottom: 10px;
+    display: block;
+  }
+  .btn-outline {
+    background: transparent; color: #5B3BCC;
+    border: 1.5px solid #5B3BCC;
+    border-radius: 12px; padding: 12px 20px;
+    font-size: 15px; font-weight: 500; width: 100%;
+    cursor: pointer; font-family: inherit; margin-bottom: 10px;
+    display: block;
+  }
+  .btn-gold {
+    background: #F5A623; color: #4A2800; border: none;
+    border-radius: 12px; padding: 12px 20px;
+    font-size: 14px; font-weight: 600; width: 100%;
+    cursor: pointer; font-family: inherit;
+    display: block;
+  }
+
+  /* Input */
+  .input-group { margin-bottom: 12px; }
+  .input-label { font-size: 12px; color: #6B5B95; margin-bottom: 5px; }
+  .input-field {
+    background: #F4F2FF; border: 1px solid #D8D0F5;
+    border-radius: 8px; padding: 10px 13px;
+    font-size: 14px; color: #1A0A2E; width: 100%;
+    font-family: inherit;
+  }
+  .input-field:focus { outline: none; border-color: #5B3BCC; background: #fff; }
+  .input-field.focused { border-color: #5B3BCC; background: #fff; }
+
+  /* Chips */
+  .chip-row { display: flex; flex-wrap: wrap; gap: 7px; }
+  .chip {
+    background: #EEEDFE; color: #3C3489;
+    border-radius: 99px; padding: 7px 14px;
+    font-size: 13px; cursor: pointer;
+  }
+  .chip.selected { background: #5B3BCC; color: #fff; }
+
+  /* Audio player */
+  .audio-player {
+    background: #F4F2FF; border-radius: 14px; padding: 16px;
+  }
+  .audio-title { font-size: 14px; font-weight: 500; margin-bottom: 12px; color: #1A0A2E; }
+  .progress-bar {
+    height: 4px; background: #D8D0F5; border-radius: 99px;
+    margin-bottom: 8px; position: relative;
+  }
+  .progress-fill {
+    width: 35%; height: 100%; background: #5B3BCC;
+    border-radius: 99px; position: relative;
+  }
+  .progress-thumb {
+    width: 14px; height: 14px; background: #5B3BCC;
+    border-radius: 50%; position: absolute;
+    top: -5px; right: -7px;
+  }
+  .time-row {
+    display: flex; justify-content: space-between;
+    font-size: 11px; color: #9585C5; margin-bottom: 12px;
+  }
+  .controls { display: flex; justify-content: center; align-items: center; gap: 20px; }
+  .ctrl-btn { font-size: 20px; cursor: pointer; color: #6B5B95; }
+  .play-btn {
+    width: 48px; height: 48px; background: #5B3BCC;
+    border-radius: 50%; display: flex; align-items: center;
+    justify-content: center; cursor: pointer;
+  }
+  .play-icon {
+    width: 0; height: 0;
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    border-left: 16px solid #fff;
+    margin-left: 4px;
+  }
+
+  /* Story card */
+  .story-card {
+    background: #fff; border: 1px solid #E8E3FF;
+    border-radius: 14px; overflow: hidden;
+  }
+  .story-card-banner {
+    height: 80px; background: #2D1B6E;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 36px;
+  }
+  .story-card-body { padding: 12px 14px; }
+  .story-card-title { font-size: 14px; font-weight: 500; color: #1A0A2E; }
+  .story-card-meta { font-size: 11px; color: #9585C5; margin-top: 3px; }
+  .tag-row { display: flex; gap: 5px; margin-top: 8px; }
+  .tag {
+    font-size: 10px; font-weight: 600; padding: 3px 9px;
+    border-radius: 99px; text-transform: uppercase; letter-spacing: .04em;
+  }
+  .tag-purple { background: #EEEDFE; color: #3C3489; }
+  .tag-green { background: #E1F5EE; color: #085041; }
+
+  /* Profile badge */
+  .profile-badge {
+    display: flex; align-items: center; gap: 12px;
+    background: #F4F2FF; border-radius: 14px; padding: 12px 14px;
+  }
+  .profile-avatar {
+    width: 46px; height: 46px; border-radius: 50%;
+    background: #5B3BCC; display: flex; align-items: center;
+    justify-content: center; font-size: 22px; flex-shrink: 0;
+  }
+  .profile-name { font-size: 15px; font-weight: 500; color: #1A0A2E; }
+  .profile-sub { font-size: 12px; color: #6B5B95; margin-top: 2px; }
+  .premium-badge {
+    margin-left: auto; font-size: 11px; font-weight: 600;
+    background: #F5A623; color: #4A2800;
+    padding: 5px 10px; border-radius: 99px;
+  }
+
+  /* Spacing */
+  .spacing-row { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; }
+  .sp-item { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .sp-block { background: #CEC8F8; border-radius: 3px; width: 10px; }
+  .sp-label { font-size: 10px; color: #9585C5; }
+
+  /* Radius */
+  .radius-row { display: flex; gap: 14px; align-items: flex-end; flex-wrap: wrap; }
+  .r-item { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .r-box {
+    background: #EEEDFE; display: flex; align-items: center;
+    justify-content: center; font-size: 11px; font-weight: 500;
+    color: #3C3489; padding: 10px 16px;
+  }
+  .r-label { font-size: 10px; color: #9585C5; text-align: center; }
+
+  /* Motion */
+  .motion-grid { display: flex; flex-wrap: wrap; gap: 10px; }
+  .motion-pill {
+    background: #fff; border: 1px solid #E8E3FF;
+    border-radius: 10px; padding: 10px 14px;
+  }
+  .motion-name { font-size: 13px; font-weight: 500; color: #1A0A2E; }
+  .motion-val { font-size: 11px; color: #9585C5; margin-top: 3px; }
+
+  /* Icons */
+  .icon-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
+  .icon-item { display: flex; flex-direction: column; align-items: center; gap: 6px; }
+  .icon-box {
+    width: 48px; height: 48px; border-radius: 12px;
+    background: #F4F2FF; border: 1px solid #E8E3FF;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+  }
+  .icon-label { font-size: 10px; color: #9585C5; text-align: center; }
+
+  /* Footer */
+  .ds-footer {
+    text-align: center; margin-top: 56px;
+    font-size: 12px; color: #9585C5;
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="page-header">
+    <div class="app-icon">🌙</div>
+    <h1>MasalAI Design System</h1>
+    <p>Renk, tipografi, bileşen ve hareket rehberi</p>
+  </div>
+
+  <!-- COLORS -->
+  <div class="section">
+    <div class="section-title">Marka Renk Paleti</div>
+    <div class="swatch-grid" style="margin-bottom: 12px;">
+      <div class="swatch" style="background:#1A0A2E;">
+        <div class="swatch-name" style="color:#CEC8F8;">Gece Moru</div>
+        <div class="swatch-hex" style="color:#9E99D8;">#1A0A2E</div>
+        <div class="swatch-role" style="color:#7A73C0;">Primary</div>
+      </div>
+      <div class="swatch" style="background:#5B3BCC;">
+        <div class="swatch-name" style="color:#E8E5FF;">Masal Moru</div>
+        <div class="swatch-hex" style="color:#B8B0EE;">#5B3BCC</div>
+        <div class="swatch-role" style="color:#A09CE0;">Accent / CTA</div>
+      </div>
+      <div class="swatch" style="background:#F5A623;">
+        <div class="swatch-name" style="color:#4A2800;">Yıldız Sarısı</div>
+        <div class="swatch-hex" style="color:#7A4A10;">#F5A623</div>
+        <div class="swatch-role" style="color:#8A5820;">Premium / CTA</div>
+      </div>
+      <div class="swatch" style="background:#FF6B8A;">
+        <div class="swatch-name" style="color:#4B0018;">Peri Pembesi</div>
+        <div class="swatch-hex" style="color:#8B2040;">#FF6B8A</div>
+        <div class="swatch-role" style="color:#9B3050;">Highlight</div>
+      </div>
+      <div class="swatch" style="background:#1EC8A0;">
+        <div class="swatch-name" style="color:#013D2E;">Orman Yeşili</div>
+        <div class="swatch-hex" style="color:#025C43;">#1EC8A0</div>
+        <div class="swatch-role" style="color:#037A5B;">Success</div>
+      </div>
+    </div>
+    <div class="swatch-grid">
+      <div class="swatch" style="background:#F8F5FF; border:1px solid #E8E3FF;">
+        <div class="swatch-name" style="color:#3C3489;">Açık Lavanta</div>
+        <div class="swatch-hex" style="color:#534AB7;">#F8F5FF</div>
+        <div class="swatch-role" style="color:#6B5B95;">Background</div>
+      </div>
+      <div class="swatch" style="background:#FFF9F0; border:1px solid #FFE8C0;">
+        <div class="swatch-name" style="color:#633806;">Krem</div>
+        <div class="swatch-hex" style="color:#854F0B;">#FFF9F0</div>
+        <div class="swatch-role" style="color:#9B6B20;">Card bg</div>
+      </div>
+      <div class="swatch" style="background:#2D1B6E;">
+        <div class="swatch-name" style="color:#CEC8F8;">Derin Mor</div>
+        <div class="swatch-hex" style="color:#9E99D8;">#2D1B6E</div>
+        <div class="swatch-role" style="color:#7A73C0;">Dark surface</div>
+      </div>
+      <div class="swatch" style="background:#E8E3FF; border:1px solid #CEC8F8;">
+        <div class="swatch-name" style="color:#26215C;">Sis Moru</div>
+        <div class="swatch-hex" style="color:#3C3489;">#E8E3FF</div>
+        <div class="swatch-role" style="color:#534AB7;">Border</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TYPOGRAPHY -->
+  <div class="section">
+    <div class="section-title">Tipografi</div>
+    <div class="type-card">
+      <div class="type-row">
+        <div style="font-size:32px;font-weight:600;color:#1A0A2E;letter-spacing:-1.5px;line-height:1.1;">Uykuya dalan prenses</div>
+        <div class="type-meta">Display · 32px · weight 600 · letter-spacing -1.5px · Karşılama ekranları</div>
+      </div>
+      <div class="type-row">
+        <div style="font-size:24px;font-weight:600;color:#1A0A2E;letter-spacing:-.5px;">Masalına başlayalım</div>
+        <div class="type-meta">H1 · 24px · weight 600 · Ekran başlıkları</div>
+      </div>
+      <div class="type-row">
+        <div style="font-size:18px;font-weight:500;color:#1A0A2E;">Karakterini seç</div>
+        <div class="type-meta">H2 · 18px · weight 500 · Bölüm başlıkları</div>
+      </div>
+      <div class="type-row">
+        <div style="font-size:16px;font-weight:400;color:#1A0A2E;line-height:1.75;">Bir varmış bir yokmuş, uzak diyarlarda küçük bir prens yaşarmış. Her gece yıldızlara bakarak yeni maceralar hayal edermiş.</div>
+        <div class="type-meta">Body · 16px · weight 400 · Masal metni · line-height 1.75</div>
+      </div>
+      <div class="type-row">
+        <div style="font-size:14px;font-weight:400;color:#6B5B95;">Çocuk adı · 5 yaş · 3 masal oluşturuldu</div>
+        <div class="type-meta">Caption · 14px · weight 400 · Yardımcı bilgiler</div>
+      </div>
+      <div class="type-row">
+        <div style="font-size:12px;font-weight:600;color:#5B3BCC;letter-spacing:.06em;text-transform:uppercase;">Masal kategorisi</div>
+        <div class="type-meta">Label · 12px · weight 600 · uppercase · Badge/etiket</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SPACING -->
+  <div class="section">
+    <div class="section-title">Spacing Sistemi</div>
+    <div class="type-card">
+      <div class="spacing-row">
+        <div class="sp-item"><div class="sp-block" style="height:4px;"></div><div class="sp-label">4px</div></div>
+        <div class="sp-item"><div class="sp-block" style="height:8px;"></div><div class="sp-label">8px</div></div>
+        <div class="sp-item"><div class="sp-block" style="height:12px;"></div><div class="sp-label">12px</div></div>
+        <div class="sp-item"><div class="sp-block" style="height:16px;"></div><div class="sp-label">16px</div></div>
+        <div class="sp-item"><div class="sp-block" style="height:24px;"></div><div class="sp-label">24px</div></div>
+        <div class="sp-item"><div class="sp-block" style="height:32px;"></div><div class="sp-label">32px</div></div>
+        <div class="sp-item"><div class="sp-block" style="height:48px;"></div><div class="sp-label">48px</div></div>
+        <div class="sp-item"><div class="sp-block" style="height:64px;"></div><div class="sp-label">64px</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RADIUS -->
+  <div class="section">
+    <div class="section-title">Köşe Radius Sistemi</div>
+    <div class="type-card">
+      <div class="radius-row">
+        <div class="r-item">
+          <div class="r-box" style="border-radius:4px;width:64px;height:48px;"></div>
+          <div class="r-label">4px<br>İkon</div>
+        </div>
+        <div class="r-item">
+          <div class="r-box" style="border-radius:8px;width:80px;height:48px;"></div>
+          <div class="r-label">8px<br>Input</div>
+        </div>
+        <div class="r-item">
+          <div class="r-box" style="border-radius:12px;width:100px;height:60px;"></div>
+          <div class="r-label">12px<br>Kart</div>
+        </div>
+        <div class="r-item">
+          <div class="r-box" style="border-radius:20px;width:120px;height:70px;"></div>
+          <div class="r-label">20px<br>Modal</div>
+        </div>
+        <div class="r-item">
+          <div class="r-box" style="border-radius:99px;padding:12px 22px;height:auto;">Pill</div>
+          <div class="r-label">99px<br>Badge</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COMPONENTS -->
+  <div class="section">
+    <div class="section-title">Temel Bileşenler</div>
+    <div class="comp-grid">
+      <div class="comp-card">
+        <div class="comp-name">Butonlar</div>
+        <button class="btn-primary">Masal oluştur</button>
+        <button class="btn-outline">Kütüphane</button>
+        <button class="btn-gold">Premium'a geç ✦</button>
+      </div>
+      <div class="comp-card">
+        <div class="comp-name">Giriş Alanları</div>
+        <div class="input-group">
+          <div class="input-label">Karakter adı</div>
+          <input class="input-field" value="Minik Prenses Ela" readonly>
+        </div>
+        <div class="input-group">
+          <div class="input-label">Mekan</div>
+          <input class="input-field focused" value="Büyülü orman" readonly>
+        </div>
+      </div>
+      <div class="comp-card">
+        <div class="comp-name">Seçim Chip'leri</div>
+        <div class="chip-row">
+          <span class="chip selected">Macera</span>
+          <span class="chip">Arkadaşlık</span>
+          <span class="chip">Doğa</span>
+          <span class="chip">Cesaret</span>
+          <span class="chip">Paylaşmak</span>
+        </div>
+      </div>
+      <div class="comp-card">
+        <div class="comp-name">Ses Oynatıcı</div>
+        <div class="audio-player">
+          <div class="audio-title">Ormanın Sırrı</div>
+          <div class="progress-bar">
+            <div class="progress-fill"><div class="progress-thumb"></div></div>
+          </div>
+          <div class="time-row"><span>2:14</span><span>6:30</span></div>
+          <div class="controls">
+            <span class="ctrl-btn">⏮</span>
+            <div class="play-btn"><div class="play-icon"></div></div>
+            <span class="ctrl-btn">⏭</span>
+          </div>
+        </div>
+      </div>
+      <div class="comp-card">
+        <div class="comp-name">Masal Kartı</div>
+        <div class="story-card">
+          <div class="story-card-banner">🌙</div>
+          <div class="story-card-body">
+            <div class="story-card-title">Ormanın Sırrı</div>
+            <div class="story-card-meta">Ela için · Bugün</div>
+            <div class="tag-row">
+              <span class="tag tag-purple">Macera</span>
+              <span class="tag tag-green">Sesli</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="comp-card">
+        <div class="comp-name">Profil Rozeti</div>
+        <div class="profile-badge">
+          <div class="profile-avatar">👧</div>
+          <div>
+            <div class="profile-name">Ela</div>
+            <div class="profile-sub">5 yaş · 12 masal</div>
+          </div>
+          <div class="premium-badge">Premium</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MOTION -->
+  <div class="section">
+    <div class="section-title">Animasyon & Hareket</div>
+    <div class="motion-grid">
+      <div class="motion-pill"><div class="motion-name">Hızlı geri bildirim</div><div class="motion-val">150ms · ease-out</div></div>
+      <div class="motion-pill"><div class="motion-name">Ekran geçişi</div><div class="motion-val">300ms · ease-in-out</div></div>
+      <div class="motion-pill"><div class="motion-name">Modal açılış</div><div class="motion-val">350ms · spring</div></div>
+      <div class="motion-pill"><div class="motion-name">Yükleme pulse</div><div class="motion-val">1.4s · ease-in-out · loop</div></div>
+      <div class="motion-pill"><div class="motion-name">Sayfa kaydırma</div><div class="motion-val">400ms · ease-out · overscroll</div></div>
+    </div>
+  </div>
+
+  <!-- ICONS -->
+  <div class="section">
+    <div class="section-title">İkon Ailesi</div>
+    <div class="icon-grid">
+      <div class="icon-item"><div class="icon-box">🌙</div><div class="icon-label">Ana sayfa</div></div>
+      <div class="icon-item"><div class="icon-box">✨</div><div class="icon-label">Oluştur</div></div>
+      <div class="icon-item"><div class="icon-box">📚</div><div class="icon-label">Kütüphane</div></div>
+      <div class="icon-item"><div class="icon-box">🎙️</div><div class="icon-label">Sesli</div></div>
+      <div class="icon-item"><div class="icon-box">👦</div><div class="icon-label">Profil</div></div>
+      <div class="icon-item"><div class="icon-box">⚙️</div><div class="icon-label">Ayarlar</div></div>
+      <div class="icon-item"><div class="icon-box">⭐</div><div class="icon-label">Favori</div></div>
+      <div class="icon-item"><div class="icon-box">🔒</div><div class="icon-label">Premium</div></div>
+      <div class="icon-item"><div class="icon-box">🗺️</div><div class="icon-label">Mekan</div></div>
+      <div class="icon-item"><div class="icon-box">🧙</div><div class="icon-label">Karakter</div></div>
+      <div class="icon-item"><div class="icon-box">💬</div><div class="icon-label">Konu</div></div>
+      <div class="icon-item"><div class="icon-box">💡</div><div class="icon-label">Mesaj</div></div>
+    </div>
+  </div>
+
+  <div class="ds-footer">MasalAI Design System v1.1 — Mart 2026 · 8 ekran — tüm hakları saklıdır</div>
+</div>
+</body>
+</html>

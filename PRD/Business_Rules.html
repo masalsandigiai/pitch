@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MasalAI — İş Kuralları v1.3</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', system-ui, sans-serif; background: #F4F2FF; color: #1A0A2E; padding: 40px 24px 80px; }
+  .page { max-width: 860px; margin: 0 auto; }
+  .page-header { margin-bottom: 40px; }
+  .page-header h1 { font-size: 28px; font-weight: 700; letter-spacing: -1px; margin-bottom: 6px; }
+  .page-header p { font-size: 14px; color: #6B5B95; }
+  .version-row { display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+  .vtag { font-size: 11px; font-weight: 600; padding: 4px 10px; border-radius: 99px; }
+  .vtag-purple { background: #EEEDFE; color: #3C3489; }
+  .vtag-amber  { background: #FAEEDA; color: #633806; }
+  .vtag-teal   { background: #E1F5EE; color: #085041; }
+  .vtag-coral  { background: #FAECE7; color: #712B13; }
+  .section { margin-bottom: 36px; }
+  .section-title { font-size: 11px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #9585C5; margin-bottom: 16px; padding-bottom: 10px; border-bottom: 1px solid #E8E3FF; }
+  .rule-card { background: #fff; border: 1px solid #E8E3FF; border-radius: 16px; overflow: hidden; margin-bottom: 16px; }
+  .rule-header { display: flex; align-items: flex-start; gap: 16px; padding: 18px 20px; border-bottom: 1px solid #F0EDF9; }
+  .rule-id { font-size: 10px; font-weight: 700; color: #9585C5; background: #F4F2FF; border: 1px solid #E8E3FF; border-radius: 6px; padding: 4px 8px; white-space: nowrap; margin-top: 2px; }
+  .rule-title { font-size: 15px; font-weight: 600; color: #1A0A2E; margin-bottom: 4px; }
+  .rule-desc { font-size: 13px; color: #4B3590; line-height: 1.65; }
+  .rule-body { padding: 16px 20px; }
+  .detail-row { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid #F4F2FF; align-items: flex-start; }
+  .detail-row:last-child { border-bottom: none; padding-bottom: 0; }
+  .detail-label { font-size: 11px; font-weight: 600; color: #9585C5; text-transform: uppercase; letter-spacing: .05em; min-width: 120px; padding-top: 1px; }
+  .detail-value { font-size: 13px; color: #1A0A2E; line-height: 1.6; flex: 1; }
+  .detail-value code { background: #EEEDFE; color: #3C3489; font-family: 'Courier New', monospace; font-size: 12px; padding: 2px 6px; border-radius: 4px; }
+  .highlight { background: #FAEEDA; border: 1px solid #FAC775; border-radius: 10px; padding: 14px 16px; margin-top: 10px; font-size: 13px; color: #633806; line-height: 1.65; }
+  .highlight strong { color: #412402; font-weight: 600; }
+  .success-box { background: #E1F5EE; border: 1px solid #9FE1CB; border-radius: 10px; padding: 14px 16px; margin-top: 10px; font-size: 13px; color: #085041; line-height: 1.65; }
+  .danger-box { background: #FCEBEB; border: 1px solid #F7C1C1; border-radius: 10px; padding: 14px 16px; margin-top: 10px; font-size: 13px; color: #501313; line-height: 1.65; }
+  .danger-box strong { color: #2D0B0B; font-weight: 600; }
+  .flow { display: flex; flex-direction: column; gap: 0; margin-top: 4px; }
+  .flow-step { display: flex; gap: 12px; align-items: flex-start; padding: 8px 0; }
+  .flow-step-num { width: 22px; height: 22px; border-radius: 50%; background: #5B3BCC; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; flex-shrink: 0; margin-top: 1px; }
+  .flow-step-text { font-size: 13px; color: #1A0A2E; line-height: 1.6; }
+  .flow-step-text span { color: #5B3BCC; font-weight: 500; }
+  .flow-connector { width: 22px; display: flex; justify-content: center; flex-shrink: 0; }
+  .flow-line { width: 1px; height: 12px; background: #CEC8F8; margin: 0 auto; }
+  .math-table { width: 100%; border-collapse: collapse; margin-top: 4px; }
+  .math-table td { padding: 8px 12px; font-size: 13px; border-bottom: 1px solid #F0EDF9; }
+  .math-table tr:last-child td { border-bottom: none; }
+  .math-table .col-label { color: #6B5B95; font-weight: 500; width: 55%; }
+  .math-table .col-value { color: #1A0A2E; font-weight: 600; text-align: right; }
+  .math-table .col-value.highlight-val { color: #5B3BCC; font-size: 14px; }
+  .math-table tr.total-row td { background: #F4F2FF; font-weight: 600; }
+  .summary-table { width: 100%; border-collapse: collapse; }
+  .summary-table th { text-align: left; font-size: 11px; font-weight: 600; color: #9585C5; text-transform: uppercase; letter-spacing: .06em; padding: 10px 14px; border-bottom: 1px solid #E8E3FF; background: #F9F8FF; }
+  .summary-table td { padding: 10px 14px; font-size: 13px; color: #1A0A2E; border-bottom: 1px solid #F4F2FF; }
+  .summary-table tr:last-child td { border-bottom: none; }
+  .summary-table .check { color: #1D9E75; font-weight: 700; }
+  .summary-table .cross { color: #E24B4A; font-weight: 700; }
+  .impl-badge { display: inline-flex; align-items: center; gap: 4px; font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 6px; background: #E1F5EE; color: #085041; margin-left: 6px; }
+  .footer { text-align: center; margin-top: 48px; font-size: 12px; color: #9585C5; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="page-header">
+    <h1>📋 MasalAI — İş Kuralları</h1>
+    <p>Ürün geliştirme, backend ve tasarım için bağlayıcı kurallar</p>
+    <div class="version-row">
+      <span class="vtag vtag-purple">v1.3</span>
+      <span class="vtag vtag-amber">Mart 2026</span>
+      <span class="vtag vtag-teal">3 aktif kural</span>
+      <span class="vtag vtag-coral">OpenAI TTS</span>
+    </div>
+  </div>
+
+  <!-- BR-001 -->
+  <div class="section">
+    <div class="section-title">İçerik Uzunluğu Kuralları</div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <div class="rule-id">BR-001</div>
+        <div>
+          <div class="rule-title">Masal maksimum uzunluğu — 1.300 kelime <span class="impl-badge">✅ Uygulandı</span></div>
+          <div class="rule-desc">Her üretilen masal, 10 dakikalık sesli anlatıma karşılık gelecek uzunluğu aşmamalıdır. Bu sınır prompt, backend ve veritabanı katmanında uygulanır.</div>
+        </div>
+      </div>
+      <div class="rule-body">
+        <div class="detail-row">
+          <div class="detail-label">Matematiksel temel</div>
+          <div class="detail-value">
+            <table class="math-table">
+              <tr><td class="col-label">Türkçe ortalama konuşma hızı</td><td class="col-value">~130 kelime / dakika</td></tr>
+              <tr><td class="col-label">Maksimum ses süresi</td><td class="col-value">10 dakika</td></tr>
+              <tr class="total-row"><td class="col-label">Maksimum kelime sayısı</td><td class="col-value highlight-val">1.300 kelime</td></tr>
+              <tr><td class="col-label">Güvenli prompt hedefi</td><td class="col-value">1.100–1.200 kelime</td></tr>
+            </table>
+          </div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">Yaş bazlı hedefler</div>
+          <div class="detail-value">
+            <table class="math-table">
+              <tr><td class="col-label">2–4 yaş</td><td class="col-value">400–600 kelime (~3–5 dk)</td></tr>
+              <tr><td class="col-label">5–6 yaş</td><td class="col-value">700–900 kelime (~5–7 dk)</td></tr>
+              <tr><td class="col-label">7–8 yaş</td><td class="col-value">900–1.200 kelime (~7–9 dk)</td></tr>
+            </table>
+          </div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">Backend doğrulama</div>
+          <div class="detail-value">
+            <div class="flow">
+              <div class="flow-step"><div class="flow-step-num">1</div><div class="flow-step-text">Claude API JSON yanıtı parse edilir, <span>word_count</span> gerçekten sayılır (Claude'un beyan ettiğine güvenilmez)</div></div>
+              <div class="flow-connector"><div class="flow-line"></div></div>
+              <div class="flow-step"><div class="flow-step-num">2</div><div class="flow-step-text"><span>word_count > 1.300</span> ise kısaltma promptuyla 1 retry atılır</div></div>
+              <div class="flow-connector"><div class="flow-line"></div></div>
+              <div class="flow-step"><div class="flow-step-num">3</div><div class="flow-step-text">Retry sonrası da > 1.300 ise hard truncation, <span>wasTruncated: true</span> flag'i kaydedilir</div></div>
+              <div class="flow-connector"><div class="flow-line"></div></div>
+              <div class="flow-step"><div class="flow-step-num">4</div><div class="flow-step-text">PostgreSQL <code>word_count <= 1300</code> CHECK constraint — son güvenlik katmanı</div></div>
+            </div>
+          </div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">Uygulama yerleri</div>
+          <div class="detail-value">
+            <code>claude.service.ts</code> → prompt + retry + truncation<br>
+            <code>prisma/schema.prisma</code> → model doğrulama<br>
+            <code>migrations/001_initial.sql</code> → CHECK constraint<br>
+            <code>constants/index.ts</code> (frontend) → STORY_LIMITS sabitleri
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BR-002 -->
+  <div class="section">
+    <div class="section-title">Ses Üretim Akışı Kuralları</div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <div class="rule-id">BR-002</div>
+        <div>
+          <div class="rule-title">Metin önce, ses kullanıcı talebinde <span class="impl-badge">✅ Uygulandı</span></div>
+          <div class="rule-desc">Ses dönüşümü hiçbir zaman otomatik tetiklenmez. Masal her zaman önce metin olarak üretilip gösterilir; OpenAI TTS yalnızca kullanıcı "Sesli Dinle" butonuna bastığında çalışır.</div>
+        </div>
+      </div>
+      <div class="rule-body">
+        <div class="detail-row">
+          <div class="detail-label">Amaç</div>
+          <div class="detail-value">OpenAI TTS maliyetini minimize etmek. Masal başı TTS maliyeti ~₺2.67 — kullanıcının sesi istemediği durumlarda gereksiz maliyet oluşmamalı.</div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">TTS servisi</div>
+          <div class="detail-value">
+            <strong>OpenAI TTS</strong> — model: <code>tts-1</code>, voice: <code>onyx</code> (en doğal Türkçe), speed: 0.95<br>
+            <span style="color:#9585C5;font-size:12px;">ElevenLabs projeden tamamen kaldırılmıştır.</span>
+          </div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">DB politikası</div>
+          <div class="detail-value">
+            <div class="danger-box">
+              <strong>audioUrl veritabanında SAKLANMAZ.</strong><br>
+              Sadece <code>audioS3Key</code> saklanır. Her GET /stories/:id isteğinde S3 key'den <code>getSignedUrl()</code> ile 1 saatlik geçici URL üretilir.
+            </div>
+          </div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">S3 Cache</div>
+          <div class="detail-value">
+            <div class="success-box">
+              Bir masalın sesi S3'te varsa OpenAI TTS'e yeni istek atılmaz. Cache'den dinleme BR-003 kotasını tüketmez.
+              <code>audioExists(s3Key)</code> kontrolü her ses isteğinde yapılır.
+            </div>
+          </div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">Uygulama yerleri</div>
+          <div class="detail-value">
+            <code>story.controller.ts</code> → <code>requestStoryAudio()</code> endpoint<br>
+            <code>openai.service.ts</code> → TTS üretimi, sadece s3Key döner<br>
+            <code>StoryDetailScreen.tsx</code> → "Sesli Dinle" butonu, otomatik çağrı yok<br>
+            <code>hooks/index.ts</code> → <code>useAudio()</code> — yalnızca onPress'ten çağrılır
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BR-003 -->
+  <div class="section">
+    <div class="section-title">Sesli Anlatım Kota Kuralları</div>
+    <div class="rule-card">
+      <div class="rule-header">
+        <div class="rule-id">BR-003</div>
+        <div>
+          <div class="rule-title">Plan bazlı aylık sesli anlatım kotası <span class="impl-badge">✅ Uygulandı</span></div>
+          <div class="rule-desc">Her plan için aylık TTS hakkı farklıdır. Yıllık plan ayda 20 sesli masalle sınırlıdır. Kota aşılınca TTS engellenir ve aylık plana geçiş önerilir.</div>
+        </div>
+      </div>
+      <div class="rule-body">
+        <div class="detail-row">
+          <div class="detail-label">Plan kotaları</div>
+          <div class="detail-value">
+            <table class="math-table">
+              <tr><td class="col-label">Ücretsiz</td><td class="col-value">0 — TTS kullanamaz</td></tr>
+              <tr><td class="col-label">Premium Aylık (₺199,99)</td><td class="col-value highlight-val">Sınırsız</td></tr>
+              <tr><td class="col-label">Premium Yıllık (₺1.499,99)</td><td class="col-value highlight-val">Ayda 20 sesli masal</td></tr>
+              <tr><td class="col-label">Kredi paketi (₺39/₺79)</td><td class="col-value">Her masalda 1 sesli hak dahil</td></tr>
+            </table>
+          </div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">DB implementasyonu</div>
+          <div class="detail-value">
+            <code>subscriptions.stories_this_month</code> → aylık TTS sayacı (yıllık plan) ve ücretsiz plan masal sayacı<br>
+            <code>subscriptions.month_reset_at</code> → ay başı sıfırlama tarihi<br>
+            Sıfırlama: ay farkı ≥ 1 ise sayaç 0'a çekilir, <code>monthResetAt</code> güncellenir
+          </div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">Kota dolunca</div>
+          <div class="detail-value">
+            <div class="danger-box">
+              Backend <code>AUDIO_LIMIT_REACHED</code> hatası döner (HTTP 402).<br>
+              Mesaj: <em>"Bu ay 20 sesli anlatım hakkın doldu. Aylık Premium'a geçerek sınırsız kullanabilirsin."</em>
+            </div>
+          </div>
+        </div>
+        <div class="detail-row">
+          <div class="detail-label">Uygulama yerleri</div>
+          <div class="detail-value">
+            <code>subscription.service.ts</code> → <code>canUserRequestAudio()</code> + <code>incrementAudioCount()</code><br>
+            <code>story.controller.ts</code> → audio endpoint'inde BR-003 kontrolü<br>
+            <code>config/index.ts</code> → <code>audioLimits</code> sabitleri<br>
+            <code>constants/index.ts</code> (frontend) → <code>AUDIO_LIMITS</code>
+          </div>
+        </div>
+        <div class="highlight">
+          <strong>Önemli:</strong> S3 cache devrededir. Aynı masalı tekrar dinlemek kota tüketmez — <code>incrementAudioCount()</code> çağrılmaz.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUMMARY -->
+  <div class="section">
+    <div class="section-title">Kural Özet Tablosu</div>
+    <div style="background:#fff;border:1px solid #E8E3FF;border-radius:14px;overflow:hidden;">
+      <table class="summary-table">
+        <thead>
+          <tr><th>Kural ID</th><th>Konu</th><th>Değer</th><th>Uygulama yeri</th><th>Durum</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>BR-001</strong></td><td>Maks. kelime sayısı</td><td><strong>1.300 kelime</strong></td><td>Prompt + Backend + DB CHECK</td><td class="check">✅</td></tr>
+          <tr><td><strong>BR-001</strong></td><td>2–4 yaş hedef</td><td>400–600 kelime</td><td>claude.service.ts prompt</td><td class="check">✅</td></tr>
+          <tr><td><strong>BR-001</strong></td><td>5–6 yaş hedef</td><td>700–900 kelime</td><td>claude.service.ts prompt</td><td class="check">✅</td></tr>
+          <tr><td><strong>BR-001</strong></td><td>7–8 yaş hedef</td><td>900–1.200 kelime</td><td>claude.service.ts prompt</td><td class="check">✅</td></tr>
+          <tr><td><strong>BR-001</strong></td><td>Backend retry</td><td>1 retry, sonra truncation</td><td>claude.service.ts</td><td class="check">✅</td></tr>
+          <tr><td><strong>BR-002</strong></td><td>TTS tetikleme</td><td>Yalnızca kullanıcı talebinde</td><td>story.controller.ts + hooks</td><td class="check">✅</td></tr>
+          <tr><td><strong>BR-002</strong></td><td>Otomatik TTS</td><td>Yasak</td><td>Frontend hooks</td><td class="cross">✗ Yasak</td></tr>
+          <tr><td><strong>BR-002</strong></td><td>audioUrl DB'de</td><td>Saklanmaz</td><td>story.controller.ts</td><td class="cross">✗ Yasak</td></tr>
+          <tr><td><strong>BR-002</strong></td><td>TTS servisi</td><td>OpenAI tts-1 / onyx</td><td>openai.service.ts</td><td class="check">✅</td></tr>
+          <tr><td><strong>BR-002</strong></td><td>S3 cache</td><td>Kalıcı, silinmez</td><td>s3.service.ts</td><td class="check">✅</td></tr>
+          <tr><td><strong>BR-003</strong></td><td>Ücretsiz TTS</td><td>0 / ay</td><td>subscription.service.ts</td><td class="check">✅</td></tr>
+          <tr><td><strong>BR-003</strong></td><td>Aylık Premium TTS</td><td>Sınırsız</td><td>subscription.service.ts</td><td class="check">✅</td></tr>
+          <tr><td><strong>BR-003</strong></td><td>Yıllık Premium TTS</td><td>20 / ay</td><td>subscription.service.ts</td><td class="check">✅</td></tr>
+          <tr><td><strong>BR-003</strong></td><td>Cache'den dinleme</td><td>Kota tüketmez</td><td>story.controller.ts</td><td class="check">✅</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="footer">MasalAI İş Kuralları v1.3 — Mart 2026 · OpenAI TTS · Supabase + Render</div>
+</div>
+</body>
+</html>

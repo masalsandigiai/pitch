@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MasalAI — PRD & Ürün Stratejisi</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background: #F4F2FF;
+    color: #1A0A2E;
+    padding: 40px 24px 80px;
+    min-height: 100vh;
+  }
+  .page { max-width: 900px; margin: 0 auto; }
+
+  /* Hero */
+  .hero { text-align: center; margin-bottom: 48px; }
+  .app-icon {
+    width: 80px; height: 80px; border-radius: 22px;
+    background: #5B3BCC; display: inline-flex;
+    align-items: center; justify-content: center;
+    font-size: 40px; margin-bottom: 16px;
+  }
+  .hero h1 { font-size: 34px; font-weight: 700; letter-spacing: -1.5px; color: #1A0A2E; }
+  .hero p { font-size: 15px; color: #6B5B95; margin-top: 8px; }
+  .badge-row { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 14px; }
+  .badge { font-size: 11px; font-weight: 600; padding: 5px 12px; border-radius: 99px; }
+  .badge-purple { background: #EEEDFE; color: #3C3489; }
+  .badge-teal { background: #E1F5EE; color: #085041; }
+  .badge-amber { background: #FAEEDA; color: #633806; }
+  .badge-coral { background: #FAECE7; color: #712B13; }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 4px; background: #E8E3FF; border-radius: 12px; padding: 4px; margin-bottom: 32px; flex-wrap: wrap; }
+  .tab {
+    flex: 1; min-width: 80px; padding: 9px 8px; border: none; background: transparent;
+    border-radius: 9px; font-size: 13px; font-weight: 500; color: #6B5B95;
+    cursor: pointer; font-family: inherit; transition: all .15s;
+  }
+  .tab.active { background: #fff; color: #1A0A2E; box-shadow: 0 1px 3px rgba(91,59,204,.1); }
+  .tab:hover:not(.active) { background: rgba(255,255,255,.5); }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* Section */
+  .section { margin-bottom: 32px; }
+  .section-title {
+    font-size: 11px; font-weight: 600; letter-spacing: .09em;
+    text-transform: uppercase; color: #9585C5;
+    margin-bottom: 16px; padding-bottom: 10px;
+    border-bottom: 1px solid #E8E3FF;
+  }
+
+  /* Cards */
+  .card {
+    background: #fff; border: 1px solid #E8E3FF;
+    border-radius: 14px; padding: 18px 20px; margin-bottom: 12px;
+  }
+  .card-title { font-size: 14px; font-weight: 600; color: #1A0A2E; margin-bottom: 6px; }
+  .card-body { font-size: 13px; color: #4B3590; line-height: 1.65; }
+
+  /* Metric grid */
+  .metric-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 16px; }
+  .metric { background: #fff; border: 1px solid #E8E3FF; border-radius: 12px; padding: 16px; }
+  .metric-label { font-size: 11px; font-weight: 600; color: #9585C5; margin-bottom: 6px; text-transform: uppercase; letter-spacing: .05em; }
+  .metric-value { font-size: 22px; font-weight: 700; color: #1A0A2E; }
+  .metric-sub { font-size: 11px; color: #9585C5; margin-top: 4px; }
+
+  /* Feature list */
+  .feature-list { background: #fff; border: 1px solid #E8E3FF; border-radius: 14px; overflow: hidden; }
+  .feature-item { display: flex; align-items: flex-start; gap: 14px; padding: 14px 18px; border-bottom: 1px solid #F0EDF9; }
+  .feature-item:last-child { border-bottom: none; }
+  .feature-icon { width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0; }
+  .feature-content { flex: 1; }
+  .feature-title { font-size: 13px; font-weight: 600; color: #1A0A2E; display: flex; align-items: center; gap: 8px; }
+  .feature-desc { font-size: 12px; color: #6B5B95; margin-top: 3px; line-height: 1.5; }
+  .ftag { font-size: 10px; font-weight: 600; padding: 2px 8px; border-radius: 99px; }
+  .ftag-mvp { background: #E1F5EE; color: #085041; }
+  .ftag-v1 { background: #EEEDFE; color: #3C3489; }
+  .ftag-v2 { background: #FAEEDA; color: #633806; }
+
+  /* Screen flow */
+  .screen-flow { display: flex; gap: 0; overflow-x: auto; padding-bottom: 4px; }
+  .screen-step { min-width: 120px; flex-shrink: 0; }
+  .screen-box { background: #fff; border: 1px solid #E8E3FF; border-radius: 12px; padding: 12px; margin-right: 8px; }
+  .screen-num { font-size: 10px; font-weight: 700; color: #9585C5; margin-bottom: 4px; }
+  .screen-name { font-size: 12px; font-weight: 600; color: #1A0A2E; margin-bottom: 5px; }
+  .screen-desc { font-size: 11px; color: #6B5B95; line-height: 1.5; }
+  .screen-arrow { display: flex; align-items: center; padding-top: 20px; color: #CEC8F8; font-size: 20px; margin-right: 8px; flex-shrink: 0; }
+
+  /* Pricing */
+  .pricing-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; }
+  .pricing-card { background: #fff; border: 1px solid #E8E3FF; border-radius: 14px; padding: 18px 20px; }
+  .pricing-card.featured { border: 2px solid #5B3BCC; }
+  .featured-badge { font-size: 10px; font-weight: 700; color: #534AB7; background: #EEEDFE; padding: 3px 10px; border-radius: 99px; display: inline-block; margin-bottom: 8px; }
+  .pricing-name { font-size: 12px; font-weight: 600; color: #6B5B95; margin-bottom: 4px; }
+  .pricing-price { font-size: 26px; font-weight: 700; color: #1A0A2E; margin-bottom: 12px; }
+  .pricing-price span { font-size: 13px; font-weight: 400; color: #9585C5; }
+  .pricing-feature { font-size: 12px; color: #4B3590; padding: 4px 0; border-bottom: 1px solid #F0EDF9; display: flex; align-items: center; gap: 7px; }
+  .pricing-feature:last-child { border-bottom: none; }
+  .pricing-feature::before { content: '✓'; color: #1EC8A0; font-weight: 700; font-size: 12px; flex-shrink: 0; }
+
+  /* Tech pills */
+  .tech-group { margin-bottom: 16px; }
+  .tech-group-label { font-size: 12px; font-weight: 600; color: #4B3590; margin-bottom: 10px; }
+  .pills { display: flex; flex-wrap: wrap; gap: 8px; }
+  .pill { background: #fff; border: 1px solid #E8E3FF; border-radius: 8px; padding: 7px 12px; font-size: 12px; color: #4B3590; font-weight: 500; }
+
+  /* Timeline */
+  .timeline { position: relative; padding-left: 28px; }
+  .timeline::before { content: ''; position: absolute; left: 8px; top: 12px; bottom: 12px; width: 1.5px; background: #E8E3FF; }
+  .tl-item { position: relative; margin-bottom: 24px; }
+  .tl-item:last-child { margin-bottom: 0; }
+  .tl-dot { position: absolute; left: -24px; top: 4px; width: 12px; height: 12px; border-radius: 50%; border: 2px solid #E8E3FF; background: #fff; }
+  .tl-dot.active { background: #5B3BCC; border-color: #5B3BCC; }
+  .tl-phase { font-size: 10px; font-weight: 700; color: #9585C5; text-transform: uppercase; letter-spacing: .07em; margin-bottom: 3px; }
+  .tl-title { font-size: 15px; font-weight: 600; color: #1A0A2E; margin-bottom: 6px; }
+  .tl-body { font-size: 12px; color: #6B5B95; line-height: 1.7; }
+  .tl-card { background: #fff; border: 1px solid #E8E3FF; border-radius: 12px; padding: 14px 16px; }
+
+  /* Projection */
+  .proj-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  @media (max-width: 500px) { .proj-grid { grid-template-columns: 1fr; } }
+
+  /* Footer */
+  .footer { text-align: center; margin-top: 48px; font-size: 12px; color: #9585C5; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="app-icon">🌙</div>
+    <h1>MasalAI</h1>
+    <p>Kişiselleştirilmiş yapay zeka masal üretici — her gece yeni bir macera</p>
+    <div class="badge-row">
+      <span class="badge badge-purple">React Native</span>
+      <span class="badge badge-teal">iOS & Android</span>
+      <span class="badge badge-amber">Türkçe</span>
+      <span class="badge badge-coral">AI Powered</span>
+    </div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('overview', this)">Genel Bakış</button>
+    <button class="tab" onclick="switchTab('features', this)">Özellikler</button>
+    <button class="tab" onclick="switchTab('monetization', this)">Gelir Modeli</button>
+    <button class="tab" onclick="switchTab('cost', this)">Maliyet & Kar</button>
+    <button class="tab" onclick="switchTab('tech', this)">Teknik Mimari</button>
+    <button class="tab" onclick="switchTab('roadmap', this)">Yol Haritası</button>
+  </div>
+
+  <!-- OVERVIEW -->
+  <div id="panel-overview" class="tab-panel active">
+    <div class="section">
+      <div class="section-title">Ürün Özeti</div>
+      <div class="card">
+        <div class="card-title">Problem</div>
+        <div class="card-body">Ebeveynler çocukları için kaliteli, kişiselleştirilmiş masal içeriği bulmakta zorlanıyor. Mevcut kitaplar sınırlı ve tekrara dayanıyor. Aileler çocuklarının sevdiği karakterleri, mekanları ve değerleri yansıtan özgün hikayeler isteyebiliyor ancak bunu karşılayan dijital bir Türkçe çözüm henüz mevcut değil.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Çözüm</div>
+        <div class="card-body">MasalAI, ebeveynlerin karakter, konu, mekan ve ana mesajı seçerek sınırsız, özgün Türkçe masal üretmesini sağlar. Masallar önce metin olarak üretilir; kullanıcı isterse tek tıkla sesli anlatıma dönüştürülür. Her masal en fazla 10 dakikalık ses süresine karşılık gelecek uzunlukta (~1.300 kelime) üretilir. Abonelik veya kredi ile esnek ödeme seçeneği sunar.</div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Hedef Kitle</div>
+      <div class="metric-grid">
+        <div class="metric">
+          <div class="metric-label">Birincil Kullanıcı</div>
+          <div class="metric-value">Ebeveynler</div>
+          <div class="metric-sub">2–8 yaş çocuğu olan aileler</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Kullanım Senaryosu</div>
+          <div class="metric-value">Uyku vakti</div>
+          <div class="metric-sub">Gece & öğlen uyku rutini</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">İçerik Dili</div>
+          <div class="metric-value">Türkçe</div>
+          <div class="metric-sub">MVP — ileride çok dil</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Platform</div>
+          <div class="metric-value">iOS + Android</div>
+          <div class="metric-sub">React Native</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Rekabet Analizi</div>
+      <div class="card">
+        <div class="card-title">Carlos — Stories for Children</div>
+        <div class="card-body" style="margin-bottom: 10px;">App Store'da bulunan en yakın rakip. İngilizce odaklı, genel AI hikaye üretimi yapıyor. Türkçe desteği yok, kültürel uyum zayıf.</div>
+        <div style="font-size: 13px; font-weight: 600; color: #1A0A2E; margin-bottom: 8px;">MasalAI farkları</div>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+          <span style="background: #E1F5EE; color: #085041; padding: 5px 12px; border-radius: 8px; font-size: 12px; font-weight: 500;">Tam Türkçe deneyim</span>
+          <span style="background: #E1F5EE; color: #085041; padding: 5px 12px; border-radius: 8px; font-size: 12px; font-weight: 500;">Kültürel referanslar</span>
+          <span style="background: #E1F5EE; color: #085041; padding: 5px 12px; border-radius: 8px; font-size: 12px; font-weight: 500;">Aile odaklı UX</span>
+          <span style="background: #E1F5EE; color: #085041; padding: 5px 12px; border-radius: 8px; font-size: 12px; font-weight: 500;">Abonelik + kredi modeli</span>
+          <span style="background: #E1F5EE; color: #085041; padding: 5px 12px; border-radius: 8px; font-size: 12px; font-weight: 500;">Çocuk yaşına göre uyarlanmış dil</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <div id="panel-features" class="tab-panel">
+    <div class="section">
+      <div class="section-title">Ekran Akışı</div>
+      <div class="screen-flow">
+        <div class="screen-step">
+          <div class="screen-box">
+            <div class="screen-num">01</div>
+            <div class="screen-name">Onboarding</div>
+            <div class="screen-desc">Çocuk profili oluşturma (isim, yaş)</div>
+          </div>
+        </div>
+        <div class="screen-arrow">→</div>
+        <div class="screen-step">
+          <div class="screen-box">
+            <div class="screen-num">02</div>
+            <div class="screen-name">Ana Sayfa</div>
+            <div class="screen-desc">Önceki masallar + yeni masal butonu</div>
+          </div>
+        </div>
+        <div class="screen-arrow">→</div>
+        <div class="screen-step">
+          <div class="screen-box">
+            <div class="screen-num">03</div>
+            <div class="screen-name">Masal Oluştur</div>
+            <div class="screen-desc">Karakter · Mekan · Konu · Mesaj</div>
+          </div>
+        </div>
+        <div class="screen-arrow">→</div>
+        <div class="screen-step">
+          <div class="screen-box">
+            <div class="screen-num">04</div>
+            <div class="screen-name">Üretiliyor</div>
+            <div class="screen-desc">AI loading ekranı, animasyonlu bekleme</div>
+          </div>
+        </div>
+        <div class="screen-arrow">→</div>
+        <div class="screen-step">
+          <div class="screen-box">
+            <div class="screen-num">05</div>
+            <div class="screen-name">Masal Okuma</div>
+            <div class="screen-desc">Metin + ses çalar + kaydet</div>
+          </div>
+        </div>
+        <div class="screen-arrow">→</div>
+        <div class="screen-step">
+          <div class="screen-box">
+            <div class="screen-num">06</div>
+            <div class="screen-name">Kütüphane</div>
+            <div class="screen-desc">Kaydedilen masallar koleksiyonu</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Özellik Listesi</div>
+      <div class="feature-list">
+        <div class="feature-item">
+          <div class="feature-icon" style="background:#E1F5EE;">✨</div>
+          <div class="feature-content">
+            <div class="feature-title">AI Masal Üretimi <span class="ftag ftag-mvp">MVP</span></div>
+            <div class="feature-desc">Karakter, mekan, konu ve ana mesaj girişine göre özel Türkçe masal oluşturma. Claude API tabanlı, çocuk yaşına göre dil seviyesi ayarlı.</div>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon" style="background:#EEEDFE;">🎙️</div>
+          <div class="feature-content">
+            <div class="feature-title">AI Sesli Anlatım <span class="ftag ftag-mvp">MVP</span></div>
+            <div class="feature-desc">Metin olarak üretilen masalı kullanıcı isteğiyle Türkçe AI sesine dönüştürme. Masal önce text olarak gösterilir; "Sesli dinle" butonuna basılınca TTS tetiklenir. OpenAI TTS (tts-1) entegrasyonu. Ses S3'te cache'lenir, tekrar istekte yeniden üretilmez.</div>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon" style="background:#FAEEDA;">👦</div>
+          <div class="feature-content">
+            <div class="feature-title">Çocuk Profili <span class="ftag ftag-mvp">MVP</span></div>
+            <div class="feature-desc">İsim ve yaş bilgisiyle kişiselleştirilmiş masal tonu ve kelime haznesi. Yaş 2–4, 5–6, 7–8 için ayrı prompt stratejisi.</div>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon" style="background:#E1F5EE;">📚</div>
+          <div class="feature-content">
+            <div class="feature-title">Masal Kütüphanesi <span class="ftag ftag-mvp">MVP</span></div>
+            <div class="feature-desc">Üretilen masalları kaydetme, yeniden okuma ve dinleme. Favorileme ve kategorilere göre filtreleme.</div>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon" style="background:#FAECE7;">🎨</div>
+          <div class="feature-content">
+            <div class="feature-title">AI İllüstrasyon <span class="ftag ftag-v1">V1</span></div>
+            <div class="feature-desc">Masal kapağı için otomatik oluşturulan renkli görsel. DALL-E 3 veya Stability AI ile.</div>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon" style="background:#EEEDFE;">⭐</div>
+          <div class="feature-content">
+            <div class="feature-title">Favori Karakterler <span class="ftag ftag-v1">V1</span></div>
+            <div class="feature-desc">Sık kullanılan karakter ve mekanları kaydetme, tek tıkla hızlı masal üretimi.</div>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon" style="background:#E1F5EE;">👨‍👩‍👧</div>
+          <div class="feature-content">
+            <div class="feature-title">Çoklu Çocuk Profili <span class="ftag ftag-v1">V1</span></div>
+            <div class="feature-desc">Aynı hesaptan birden fazla çocuk profili yönetimi. Her profil için ayrı kütüphane ve geçmiş.</div>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon" style="background:#FAEEDA;">📤</div>
+          <div class="feature-content">
+            <div class="feature-title">PDF Paylaşım <span class="ftag ftag-v2">V2</span></div>
+            <div class="feature-desc">Masalı illüstrasyonuyla birlikte PDF olarak dışa aktarma ve büyükanne/büyükbaba ile paylaşım.</div>
+          </div>
+        </div>
+        <div class="feature-item">
+          <div class="feature-icon" style="background:#FAECE7;">🔔</div>
+          <div class="feature-content">
+            <div class="feature-title">Uyku Vakti Hatırlatıcısı <span class="ftag ftag-v2">V2</span></div>
+            <div class="feature-desc">Günlük özelleştirilebilir masal vakti push notification. Saat, tekrar ve profil bazlı ayar.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MONETIZATION -->
+  <div id="panel-monetization" class="tab-panel">
+    <div class="section">
+      <div class="section-title">Fiyatlandırma Modeli</div>
+      <div class="pricing-grid">
+        <div class="pricing-card">
+          <div class="pricing-name">Ücretsiz</div>
+          <div class="pricing-price">₺0 <span>/ ay</span></div>
+          <div class="pricing-feature">3 masal / ay</div>
+          <div class="pricing-feature">Metin masallar</div>
+          <div class="pricing-feature">Sesli anlatım yok</div>
+          <div class="pricing-feature">1 çocuk profili</div>
+        </div>
+        <div class="pricing-card featured">
+          <div class="featured-badge">✦ Önerilen</div>
+          <div class="pricing-name">Premium Aylık</div>
+          <div class="pricing-price">₺199,99 <span>/ ay</span></div>
+          <div class="pricing-feature">Sınırsız masal</div>
+          <div class="pricing-feature">Sınırsız sesli anlatım</div>
+          <div class="pricing-feature">3 çocuk profili</div>
+          <div class="pricing-feature">Tam kütüphane</div>
+        </div>
+        <div class="pricing-card">
+          <div class="pricing-name">Premium Yıllık</div>
+          <div class="pricing-price">₺1.499,99 <span>/ yıl</span></div>
+          <div class="pricing-feature">Aylık ₺125'e eşdeğer</div>
+          <div class="pricing-feature">%37 tasarruf</div>
+          <div class="pricing-feature">Ayda 20 sesli anlatım</div>
+          <div class="pricing-feature">Öncelikli destek</div>
+        </div>
+        <div class="pricing-card">
+          <div class="pricing-name">Kredi Paketleri</div>
+          <div class="pricing-price">₺39 <span>/ 10 masal</span></div>
+          <div class="pricing-feature">₺79 / 25 masal</div>
+          <div class="pricing-feature">Aboneliksiz kullanım</div>
+          <div class="pricing-feature">Sesli anlatım dahil</div>
+          <div class="pricing-feature">Süresiz geçerli</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Gelir Projeksiyonu — Yıl 1</div>
+      <div class="proj-grid">
+        <div class="metric">
+          <div class="metric-label">Hedef Kullanıcı</div>
+          <div class="metric-value">5.000</div>
+          <div class="metric-sub">Aylık aktif kullanıcı</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Dönüşüm Oranı</div>
+          <div class="metric-value">%8–12</div>
+          <div class="metric-sub">Freemium → ücretli</div>
+        </div>
+        <div class="metric">
+          <div class="metric-label">Tahmini ARR</div>
+          <div class="metric-value">₺300K+</div>
+          <div class="metric-sub">İyimser senaryo</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- COST & PROFITABILITY -->
+  <div id="panel-cost" class="tab-panel">
+
+    <div class="section">
+      <div class="section-title">Varsayımlar</div>
+      <div class="card">
+        <table style="width:100%;font-size:13px;border-collapse:collapse;">
+          <tr><td style="color:#6B5B95;padding:5px 0;width:60%">USD/TRY kuru</td><td style="font-weight:600;text-align:right">₺33</td></tr>
+          <tr><td style="color:#6B5B95;padding:5px 0;border-top:1px solid #F0EDF9">Ortalama masal uzunluğu</td><td style="font-weight:600;text-align:right;border-top:1px solid #F0EDF9">900 kelime / ~5.400 karakter</td></tr>
+          <tr><td style="color:#6B5B95;padding:5px 0;border-top:1px solid #F0EDF9">Claude Sonnet 4 — input</td><td style="font-weight:600;text-align:right;border-top:1px solid #F0EDF9">$3 / 1M token</td></tr>
+          <tr><td style="color:#6B5B95;padding:5px 0;border-top:1px solid #F0EDF9">Claude Sonnet 4 — output</td><td style="font-weight:600;text-align:right;border-top:1px solid #F0EDF9">$15 / 1M token</td></tr>
+          <tr><td style="color:#6B5B95;padding:5px 0;border-top:1px solid #F0EDF9">OpenAI TTS (tts-1)</td><td style="font-weight:600;text-align:right;border-top:1px solid #F0EDF9">$15 / 1M karakter</td></tr>
+          <tr><td style="color:#6B5B95;padding:5px 0;border-top:1px solid #F0EDF9">App Store komisyonu</td><td style="font-weight:600;text-align:right;border-top:1px solid #F0EDF9">%15 (ilk yıl) + KDV %20</td></tr>
+          <tr><td style="color:#6B5B95;padding:5px 0;border-top:1px solid #F0EDF9">Sesli dinleme oranı (tahmini)</td><td style="font-weight:600;text-align:right;border-top:1px solid #F0EDF9">%40</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">1 Masal Bileşen Maliyeti</div>
+      <div class="card">
+        <table style="width:100%;font-size:13px;border-collapse:collapse;">
+          <tr>
+            <td style="padding:8px 0;color:#6B5B95">Claude API — input<br><span style="font-size:11px;color:#9585C5">~500 token (system prompt + parametreler)</span></td>
+            <td style="text-align:right;padding:8px 0;font-weight:600">$0.0015<br><span style="font-size:11px;color:#9585C5;font-weight:400">₺0.05</span></td>
+          </tr>
+          <tr style="border-top:1px solid #F0EDF9">
+            <td style="padding:8px 0;color:#6B5B95">Claude API — output<br><span style="font-size:11px;color:#9585C5">~1.200 token (900 kelime masal)</span></td>
+            <td style="text-align:right;padding:8px 0;font-weight:600">$0.0180<br><span style="font-size:11px;color:#9585C5;font-weight:400">₺0.59</span></td>
+          </tr>
+          <tr style="border-top:1px solid #F0EDF9">
+            <td style="padding:8px 0;color:#6B5B95">AWS S3<br><span style="font-size:11px;color:#9585C5">Upload + depolama + GET</span></td>
+            <td style="text-align:right;padding:8px 0;font-weight:600">$0.0010<br><span style="font-size:11px;color:#9585C5;font-weight:400">₺0.03</span></td>
+          </tr>
+          <tr style="border-top:2px solid #E8E3FF;background:#F9F8FF">
+            <td style="padding:10px 0;font-weight:600;color:#1A0A2E">Metin masalı toplamı</td>
+            <td style="text-align:right;padding:10px 0;font-weight:700;color:#5B3BCC;font-size:15px">$0.020 · ₺0.67</td>
+          </tr>
+          <tr style="border-top:1px solid #F0EDF9">
+            <td style="padding:8px 0;color:#6B5B95">OpenAI TTS (tts-1)<br><span style="font-size:11px;color:#9585C5">5.400 karakter × $15/1M</span></td>
+            <td style="text-align:right;padding:8px 0;font-weight:600">$0.0810<br><span style="font-size:11px;color:#9585C5;font-weight:400">₺2.67</span></td>
+          </tr>
+          <tr style="border-top:2px solid #E8E3FF;background:#F9F8FF">
+            <td style="padding:10px 0;font-weight:600;color:#1A0A2E">Sesli masal toplamı</td>
+            <td style="text-align:right;padding:10px 0;font-weight:700;color:#5B3BCC;font-size:15px">$0.101 · ₺3.34</td>
+          </tr>
+          <tr style="border-top:2px solid #E8E3FF;background:#EEEDFE">
+            <td style="padding:10px 0;font-weight:600;color:#3C3489">Gerçek ortalama (%40 sesli)<br><span style="font-size:11px;font-weight:400;color:#534AB7">$0.020×0.60 + $0.101×0.40</span></td>
+            <td style="text-align:right;padding:10px 0;font-weight:700;color:#3C3489;font-size:16px">$0.052 · ₺1.72</td>
+          </tr>
+        </table>
+        <div style="margin-top:12px;background:#E1F5EE;border-radius:8px;padding:10px 13px;font-size:12px;color:#085041;line-height:1.6">
+          <strong>S3 cache aktif:</strong> Aynı masalı tekrar dinlemek TTS maliyeti oluşturmaz — OpenAI'ye yeni istek atılmaz.
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Plan Bazlı Aylık Karlılık</div>
+      <table style="width:100%;border-collapse:collapse;background:#fff;border:1px solid #E8E3FF;border-radius:14px;overflow:hidden;font-size:13px;">
+        <thead>
+          <tr style="background:#F9F8FF;">
+            <th style="text-align:left;padding:10px 14px;font-size:11px;font-weight:600;color:#9585C5;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid #E8E3FF;">Plan</th>
+            <th style="text-align:right;padding:10px 14px;font-size:11px;font-weight:600;color:#9585C5;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid #E8E3FF;">Net Gelir</th>
+            <th style="text-align:right;padding:10px 14px;font-size:11px;font-weight:600;color:#9585C5;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid #E8E3FF;">Maliyet</th>
+            <th style="text-align:right;padding:10px 14px;font-size:11px;font-weight:600;color:#9585C5;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid #E8E3FF;">Kar</th>
+            <th style="text-align:center;padding:10px 14px;font-size:11px;font-weight:600;color:#9585C5;text-transform:uppercase;letter-spacing:.05em;border-bottom:1px solid #E8E3FF;">Marj</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="padding:10px 14px;border-bottom:1px solid #F4F2FF;"><strong>Premium Aylık</strong><br><span style="font-size:11px;color:#9585C5">30 masal, 12 sesli (%40)</span></td>
+            <td style="text-align:right;padding:10px 14px;border-bottom:1px solid #F4F2FF;">~₺152</td>
+            <td style="text-align:right;padding:10px 14px;border-bottom:1px solid #F4F2FF;">~₺63</td>
+            <td style="text-align:right;padding:10px 14px;border-bottom:1px solid #F4F2FF;font-weight:600;color:#0F6E56">~₺89</td>
+            <td style="text-align:center;padding:10px 14px;border-bottom:1px solid #F4F2FF;"><span style="background:#E1F5EE;color:#085041;padding:3px 9px;border-radius:99px;font-size:11px;font-weight:600">%59</span></td>
+          </tr>
+          <tr>
+            <td style="padding:10px 14px;border-bottom:1px solid #F4F2FF;"><strong>Premium Yıllık</strong><br><span style="font-size:11px;color:#9585C5">30 masal, max 20 sesli (BR-003)</span></td>
+            <td style="text-align:right;padding:10px 14px;border-bottom:1px solid #F4F2FF;">~₺63/ay</td>
+            <td style="text-align:right;padding:10px 14px;border-bottom:1px solid #F4F2FF;">~₺55</td>
+            <td style="text-align:right;padding:10px 14px;border-bottom:1px solid #F4F2FF;font-weight:600;color:#0F6E56">~₺8–30</td>
+            <td style="text-align:center;padding:10px 14px;border-bottom:1px solid #F4F2FF;"><span style="background:#FAEEDA;color:#633806;padding:3px 9px;border-radius:99px;font-size:11px;font-weight:600">%13–48</span></td>
+          </tr>
+          <tr>
+            <td style="padding:10px 14px;border-bottom:1px solid #F4F2FF;"><strong>10 Kredi</strong><br><span style="font-size:11px;color:#9585C5">10 masal, 4 sesli</span></td>
+            <td style="text-align:right;padding:10px 14px;border-bottom:1px solid #F4F2FF;">~₺29</td>
+            <td style="text-align:right;padding:10px 14px;border-bottom:1px solid #F4F2FF;">~₺20</td>
+            <td style="text-align:right;padding:10px 14px;border-bottom:1px solid #F4F2FF;font-weight:600;color:#0F6E56">~₺9</td>
+            <td style="text-align:center;padding:10px 14px;border-bottom:1px solid #F4F2FF;"><span style="background:#E1F5EE;color:#085041;padding:3px 9px;border-radius:99px;font-size:11px;font-weight:600">%31</span></td>
+          </tr>
+          <tr>
+            <td style="padding:10px 14px;border-bottom:1px solid #F4F2FF;"><strong>25 Kredi</strong><br><span style="font-size:11px;color:#9585C5">25 masal, 10 sesli</span></td>
+            <td style="text-align:right;padding:10px 14px;border-bottom:1px solid #F4F2FF;">~₺59</td>
+            <td style="text-align:right;padding:10px 14px;border-bottom:1px solid #F4F2FF;">~₺34</td>
+            <td style="text-align:right;padding:10px 14px;border-bottom:1px solid #F4F2FF;font-weight:600;color:#0F6E56">~₺25</td>
+            <td style="text-align:center;padding:10px 14px;border-bottom:1px solid #F4F2FF;"><span style="background:#E1F5EE;color:#085041;padding:3px 9px;border-radius:99px;font-size:11px;font-weight:600">%42</span></td>
+          </tr>
+          <tr>
+            <td style="padding:10px 14px;"><strong>Ücretsiz</strong><br><span style="font-size:11px;color:#9585C5">3 masal, ses yok (BR-003)</span></td>
+            <td style="text-align:right;padding:10px 14px;">₺0</td>
+            <td style="text-align:right;padding:10px 14px;">~₺2</td>
+            <td style="text-align:right;padding:10px 14px;font-weight:600;color:#A32D2D">-₺2</td>
+            <td style="text-align:center;padding:10px 14px;"><span style="background:#FCEBEB;color:#501313;padding:3px 9px;border-radius:99px;font-size:11px;font-weight:600">Zarar</span></td>
+          </tr>
+        </tbody>
+      </table>
+      <div style="margin-top:10px;background:#F9F8FF;border:1px solid #E8E3FF;border-radius:10px;padding:12px 14px;font-size:12px;color:#6B5B95;line-height:1.6">
+        <strong style="color:#1A0A2E">Yıllık plan notu:</strong> BR-003 kotası (ayda 20 sesli) worst-case maliyeti sınırlıyor. Ortalama kullanıcı 10-12 sesli masal dinler → gerçekte ~₺20-30/ay kar oluşur. Ücretsiz plan zararı (%15 dönüşüm varsayımıyla) müşteri edinme maliyeti olarak kabul edilebilir.
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">100 Kullanıcı Senaryosu (Aylık)</div>
+      <div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;">
+        <div style="background:var(--color-background-secondary);border-radius:8px;padding:14px">
+          <div style="font-size:11px;color:#9585C5;margin-bottom:4px;font-weight:500">Kullanıcı dağılımı</div>
+          <div style="font-size:13px;color:#1A0A2E;line-height:1.8">70 ücretsiz<br>20 aylık premium<br>7 yıllık premium<br>3 kredi kullanıcısı</div>
+        </div>
+        <div style="background:var(--color-background-secondary);border-radius:8px;padding:14px">
+          <div style="font-size:11px;color:#9585C5;margin-bottom:4px;font-weight:500">Toplam gelir</div>
+          <div style="font-size:22px;font-weight:500;color:#1A0A2E">~₺3.600</div>
+          <div style="font-size:11px;color:#9585C5;margin-top:2px">Net (komisyon sonrası)</div>
+        </div>
+        <div style="background:var(--color-background-secondary);border-radius:8px;padding:14px">
+          <div style="font-size:11px;color:#9585C5;margin-bottom:4px;font-weight:500">Toplam maliyet</div>
+          <div style="font-size:22px;font-weight:500;color:#1A0A2E">~₺1.550</div>
+          <div style="font-size:11px;color:#9585C5;margin-top:2px">AI + TTS + S3</div>
+        </div>
+        <div style="background:#E1F5EE;border-radius:8px;padding:14px">
+          <div style="font-size:11px;color:#085041;margin-bottom:4px;font-weight:500">Net kar</div>
+          <div style="font-size:22px;font-weight:500;color:#085041">~₺2.050</div>
+          <div style="font-size:11px;color:#0F6E56;margin-top:2px">%57 kar marjı</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- TECH -->
+  <div id="panel-tech" class="tab-panel">
+    <div class="section">
+      <div class="section-title">Teknoloji Stack'i</div>
+      <div class="tech-group">
+        <div class="tech-group-label">Frontend (Mobil)</div>
+        <div class="pills">
+          <span class="pill">⚛️ React Native</span>
+          <span class="pill">📘 TypeScript</span>
+          <span class="pill">🧭 React Navigation</span>
+          <span class="pill">🎨 NativeWind</span>
+          <span class="pill">🔄 Zustand</span>
+          <span class="pill">🔁 React Query</span>
+        </div>
+      </div>
+      <div class="tech-group">
+        <div class="tech-group-label">Backend</div>
+        <div class="pills">
+          <span class="pill">🟢 Node.js + Express</span>
+          <span class="pill">🐘 PostgreSQL</span>
+          <span class="pill">🔴 
+          <span class="pill">☁️ Supabase (PostgreSQL)</span>
+          <span class="pill">🔐 JWT Auth</span>
+          <span class="pill">💳 RevenueCat</span>
+        </div>
+      </div>
+      <div class="tech-group">
+        <div class="tech-group-label">AI & 3. Taraf Servisler</div>
+        <div class="pills">
+          <span class="pill">🤖 Claude API (Masal üretimi)</span>
+          <span class="pill">🎙️ OpenAI TTS</span>
+          <span class="pill">☁️ AWS S3 (Ses dosyaları)</span>
+          <span class="pill">🔔 Firebase FCM</span>
+          <span class="pill">📊 Mixpanel</span>
+          <span class="pill">🐛 Sentry</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <div class="section-title">Mimari Kararlar</div>
+      <div class="card">
+        <div class="card-title">AI Prompt Stratejisi</div>
+        <div class="card-body">System prompt: Türkçe çocuk masalı uzmanı persona + güvenli içerik kuralları + <strong>maksimum 1.300 kelime sınırı</strong> (≈ 10 dk ses). User prompt: karakter + mekan + konu + mesaj + çocuk yaşı. Output: yapılandırılmış JSON (başlık, paragraflar, kelime sayısı, önerilen yaş). Backend üretilen metni kaydetmeden önce kelime sayısını doğrular; 1.300'ü aşarsa Claude'dan kısaltılmış versiyon istenir. Prompt versiyonlama ile A/B test desteği.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Ses Üretimi Pipeline</div>
+        <div class="card-body">Masal önce metin olarak üretilir ve kullanıcıya gösterilir. Kullanıcı "Sesli dinle" butonuna bastığında TTS akışı başlar — bu sayede gereksiz ses üretimi önlenir. S3'te cache yoksa OpenAI TTS (tts-1) modeline istek gider; üretilen ses S3'te saklanır ve imzalı URL kullanıcıya döner. <strong>1.300 kelimeyi aşan masallar TTS'e gönderilemez</strong> — backend bu kontrolü masal kaydı sırasında uygular.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">İçerik Güvenliği</div>
+        <div class="card-body">Claude'un built-in içerik filtresi + özel çocuk dostu prompt kuralları. Şiddet, korku, olumsuz mesajlar için output validation katmanı. Her masal üretiminde yaş uygunluğu skoru hesaplanır. Şikâyet mekanizması ve moderasyon kuyruğu.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">Ödeme Altyapısı</div>
+        <div class="card-body">RevenueCat ile iOS App Store ve Google Play abonelik yönetimi. Stripe ile kredi paketi satışı (web üzerinden). Webhook tabanlı gerçek zamanlı abonelik durum senkronizasyonu.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ROADMAP -->
+  <div id="panel-roadmap" class="tab-panel">
+    <div class="section">
+      <div class="section-title">Geliştirme Yol Haritası</div>
+      <div class="timeline">
+        <div class="tl-item">
+          <div class="tl-dot active"></div>
+          <div class="tl-card">
+            <div class="tl-phase">Hafta 1–4 · Tamamlandı ✅</div>
+            <div class="tl-title">Çekirdek Ürün</div>
+            <div class="tl-body">Proje setup (monorepo, CI/CD) · Google & Apple auth · Çocuk profili oluşturma · Masal form UI (karakter, mekan, konu, mesaj) · Claude API entegrasyonu · Masal okuma ekranı · Temel kütüphane · TestFlight & internal test</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-card">
+            <div class="tl-phase">Hafta 5–6 · Tamamlandı ✅</div>
+            <div class="tl-title">Sesli Anlatım + Ödeme</div>
+            <div class="tl-body">✅ OpenAI TTS entegrasyonu · ✅ S3 cache · ✅ BR-001/002/003 implementasyonu · ⏳ S3 bucket yapılandırması · ⏳ Google OAuth Client ID · ⏳ RevenueCat kurulumu</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-card">
+            <div class="tl-phase">Hafta 7–8 · Devam ediyor 🔄</div>
+            <div class="tl-title">Canlıya Alış</div>
+            <div class="tl-body">App Store & Google Play başvurusu · Onboarding akışı polish · Analytics (Mixpanel) entegrasyonu · Sentry hata izleme · Performans optimizasyonu · İlk kullanıcı geri bildirimleri · Landing page</div>
+          </div>
+        </div>
+        <div class="tl-item">
+          <div class="tl-dot"></div>
+          <div class="tl-card">
+            <div class="tl-phase">Hafta 9–14 · Planlı</div>
+            <div class="tl-title">Büyüme Özellikleri</div>
+            <div class="tl-body">AI illüstrasyon (DALL-E 3) · Çoklu çocuk profili · Favori karakterler kaydetme · PDF export · Uyku vakti hatırlatıcısı · İngilizce dil desteği · Paylaşım & referans sistemi</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">MasalAI PRD v2.0 — Ürün Geliştirme Dokümanı</div>
+
+</div>
+
+<script>
+  function switchTab(id, btn) {
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('panel-' + id).classList.add('active');
+    btn.classList.add('active');
+  }
+</script>
+</body>
+</html>

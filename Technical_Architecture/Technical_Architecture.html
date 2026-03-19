@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MasalAI — Teknik Mimari</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', system-ui, sans-serif; background: #F4F2FF; color: #1A0A2E; padding: 40px 24px 80px; }
+  .page { max-width: 900px; margin: 0 auto; }
+  h1 { font-size: 28px; font-weight: 700; letter-spacing: -1px; margin-bottom: 6px; }
+  .sub { font-size: 14px; color: #6B5B95; margin-bottom: 40px; }
+  h2 { font-size: 16px; font-weight: 600; color: #4B3590; margin: 40px 0 16px; padding-bottom: 10px; border-bottom: 1px solid #E8E3FF; }
+  .diagram-wrap { background: #fff; border: 1px solid #E8E3FF; border-radius: 16px; padding: 24px; margin-bottom: 12px; overflow-x: auto; }
+  svg { display: block; min-width: 600px; }
+  .legend { display: flex; gap: 20px; flex-wrap: wrap; margin-top: 16px; }
+  .legend-item { display: flex; align-items: center; gap: 7px; font-size: 12px; color: #6B5B95; }
+  .legend-dot { width: 14px; height: 10px; border-radius: 3px; }
+  .note { font-size: 13px; color: #6B5B95; line-height: 1.7; background: #fff; border: 1px solid #E8E3FF; border-radius: 12px; padding: 16px 20px; margin-top: 12px; }
+  .note strong { color: #1A0A2E; font-weight: 600; }
+  .footer { text-align: center; margin-top: 48px; font-size: 12px; color: #9585C5; }
+
+  /* SVG colors — self-contained, no external variables */
+  .node-purple-fill { fill: #EEEDFE; stroke: #534AB7; }
+  .node-teal-fill   { fill: #E1F5EE; stroke: #0F6E56; }
+  .node-coral-fill  { fill: #FAECE7; stroke: #993C1D; }
+  .node-gray-fill   { fill: #F1EFE8; stroke: #5F5E5A; }
+  .node-title-purple { fill: #3C3489; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; }
+  .node-sub-purple   { fill: #534AB7; font-family: 'Inter', sans-serif; font-size: 11px; }
+  .node-title-teal  { fill: #085041; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; }
+  .node-sub-teal    { fill: #0F6E56; font-family: 'Inter', sans-serif; font-size: 11px; }
+  .node-title-coral { fill: #712B13; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; }
+  .node-sub-coral   { fill: #993C1D; font-family: 'Inter', sans-serif; font-size: 11px; }
+  .node-title-gray  { fill: #444441; font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; }
+  .node-sub-gray    { fill: #5F5E5A; font-family: 'Inter', sans-serif; font-size: 11px; }
+  .container-purple-fill { fill: #EEEDFE; stroke: #534AB7; }
+  .container-teal-fill   { fill: #E1F5EE; stroke: #0F6E56; }
+  .container-gray-fill   { fill: #F1EFE8; stroke: #5F5E5A; }
+  .container-title { font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; }
+  .container-sub { font-family: 'Inter', sans-serif; font-size: 11px; }
+  .arr-line { stroke-width: 1.5; fill: none; }
+  .lane-line { stroke: #E8E3FF; stroke-width: 1; stroke-dasharray: 4 4; fill: none; }
+  .lane-label { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 600; fill: #9585C5; }
+  .divider-line { stroke: #E8E3FF; stroke-width: 1; fill: none; }
+  .divider-label { font-family: 'Inter', sans-serif; font-size: 11px; fill: #9585C5; }
+</style>
+</head>
+<body>
+<div class="page">
+  <h1>🏗️ MasalAI — Teknik Mimari</h1>
+  <div style="background:#E1F5EE;border:1px solid #9FE1CB;border-radius:12px;padding:12px 16px;margin-bottom:8px;font-size:13px;color:#085041;"><strong>🟢 Canlı Ortam:</strong> Backend → Render · DB → Supabase Frankfurt · Swagger → /api/docs</div>
+  <div class="sub">Sistem mimarisi · React Native + Node.js + Claude API · Supabase + Render</div>
+
+  <h2>Diyagram 1 — Sistem Mimarisi</h2>
+  <div class="diagram-wrap">
+    <svg width="100%" viewBox="0 0 680 580" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </marker>
+      </defs>
+
+      <!-- Mobil katman container -->
+      <rect x="30" y="20" width="620" height="90" rx="12" class="container-gray-fill" stroke-width="0.5"/>
+      <text x="50" y="46" class="container-title" fill="#444441">Mobil istemci</text>
+      <text x="50" y="62" class="container-sub" fill="#5F5E5A">React Native · iOS &amp; Android</text>
+
+      <rect x="60" y="72" width="130" height="28" rx="6" class="node-purple-fill" stroke-width="0.5"/>
+      <text x="125" y="87" text-anchor="middle" dominant-baseline="central" class="node-sub-purple">Masal oluştur</text>
+
+      <rect x="210" y="72" width="110" height="28" rx="6" class="node-purple-fill" stroke-width="0.5"/>
+      <text x="265" y="87" text-anchor="middle" dominant-baseline="central" class="node-sub-purple">Ses oynatıcı</text>
+
+      <rect x="340" y="72" width="100" height="28" rx="6" class="node-purple-fill" stroke-width="0.5"/>
+      <text x="390" y="87" text-anchor="middle" dominant-baseline="central" class="node-sub-purple">Kütüphane</text>
+
+      <rect x="460" y="72" width="80" height="28" rx="6" class="node-purple-fill" stroke-width="0.5"/>
+      <text x="500" y="87" text-anchor="middle" dominant-baseline="central" class="node-sub-purple">Auth</text>
+
+      <rect x="560" y="72" width="70" height="28" rx="6" class="node-purple-fill" stroke-width="0.5"/>
+      <text x="595" y="87" text-anchor="middle" dominant-baseline="central" class="node-sub-purple">Ödeme</text>
+
+      <!-- Arrow down to gateway -->
+      <line x1="340" y1="110" x2="340" y2="148" class="arr-line" stroke="#7F77DD" marker-end="url(#arr1)"/>
+
+      <!-- API Gateway -->
+      <rect x="200" y="148" width="280" height="52" rx="8" class="node-teal-fill" stroke-width="0.5"/>
+      <text x="340" y="168" text-anchor="middle" dominant-baseline="central" class="node-title-teal">API Gateway</text>
+      <text x="340" y="186" text-anchor="middle" dominant-baseline="central" class="node-sub-teal">Auth · Rate limit · Routing</text>
+
+      <!-- Arrow down to backend -->
+      <line x1="340" y1="200" x2="340" y2="238" class="arr-line" stroke="#1D9E75" marker-end="url(#arr1)"/>
+
+      <!-- Backend container -->
+      <rect x="30" y="238" width="620" height="130" rx="12" class="container-teal-fill" stroke-width="0.5"/>
+      <text x="50" y="262" class="container-title" fill="#085041">Backend servisleri</text>
+      <text x="50" y="278" class="container-sub" fill="#0F6E56">Node.js · PostgreSQL · Redis</text>
+
+      <rect x="55" y="284" width="130" height="68" rx="8" class="node-teal-fill" stroke-width="0.5"/>
+      <text x="120" y="312" text-anchor="middle" dominant-baseline="central" class="node-title-teal">Masal servisi</text>
+      <text x="120" y="330" text-anchor="middle" dominant-baseline="central" class="node-sub-teal">Prompt yönetimi</text>
+
+      <rect x="205" y="284" width="120" height="68" rx="8" class="node-teal-fill" stroke-width="0.5"/>
+      <text x="265" y="312" text-anchor="middle" dominant-baseline="central" class="node-title-teal">Ses servisi</text>
+      <text x="265" y="330" text-anchor="middle" dominant-baseline="central" class="node-sub-teal">TTS · S3 cache</text>
+
+      <rect x="345" y="284" width="130" height="68" rx="8" class="node-teal-fill" stroke-width="0.5"/>
+      <text x="410" y="312" text-anchor="middle" dominant-baseline="central" class="node-title-teal">Kullanıcı servisi</text>
+      <text x="410" y="330" text-anchor="middle" dominant-baseline="central" class="node-sub-teal">Profil · Kütüphane</text>
+
+      <rect x="495" y="284" width="130" height="68" rx="8" class="node-teal-fill" stroke-width="0.5"/>
+      <text x="560" y="312" text-anchor="middle" dominant-baseline="central" class="node-title-teal">Ödeme servisi</text>
+      <text x="560" y="330" text-anchor="middle" dominant-baseline="central" class="node-sub-teal">Abonelik · Kredi</text>
+
+      <!-- Arrows down to external -->
+      <line x1="120" y1="368" x2="120" y2="406" class="arr-line" stroke="#1D9E75" marker-end="url(#arr1)"/>
+      <line x1="265" y1="368" x2="265" y2="406" class="arr-line" stroke="#1D9E75" marker-end="url(#arr1)"/>
+      <line x1="410" y1="368" x2="410" y2="406" class="arr-line" stroke="#1D9E75" marker-end="url(#arr1)"/>
+      <line x1="560" y1="368" x2="560" y2="406" class="arr-line" stroke="#1D9E75" marker-end="url(#arr1)"/>
+
+      <!-- External services -->
+      <rect x="40" y="406" width="155" height="56" rx="8" class="node-coral-fill" stroke-width="0.5"/>
+      <text x="117" y="428" text-anchor="middle" dominant-baseline="central" class="node-title-coral">Claude API</text>
+      <text x="117" y="446" text-anchor="middle" dominant-baseline="central" class="node-sub-coral">Masal üretimi</text>
+
+      <rect x="210" y="406" width="155" height="56" rx="8" class="node-coral-fill" stroke-width="0.5"/>
+      <text x="287" y="428" text-anchor="middle" dominant-baseline="central" class="node-title-coral">OpenAI TTS</text>
+      <text x="287" y="446" text-anchor="middle" dominant-baseline="central" class="node-sub-coral">Türkçe TTS</text>
+
+      <rect x="380" y="406" width="145" height="56" rx="8" class="node-coral-fill" stroke-width="0.5"/>
+      <text x="452" y="428" text-anchor="middle" dominant-baseline="central" class="node-title-coral">Supabase</text>
+      <text x="452" y="446" text-anchor="middle" dominant-baseline="central" class="node-sub-coral">Supabase Frankfurt</text>
+
+      <rect x="540" y="406" width="105" height="56" rx="8" class="node-coral-fill" stroke-width="0.5"/>
+      <text x="592" y="428" text-anchor="middle" dominant-baseline="central" class="node-title-coral">RevenueCat</text>
+      <text x="592" y="446" text-anchor="middle" dominant-baseline="central" class="node-sub-coral">Abonelik</text>
+
+      <!-- S3 -->
+      <rect x="210" y="488" width="155" height="44" rx="8" class="node-gray-fill" stroke-width="0.5"/>
+      <text x="287" y="504" text-anchor="middle" dominant-baseline="central" class="node-title-gray">AWS S3</text>
+      <text x="287" y="522" text-anchor="middle" dominant-baseline="central" class="node-sub-gray">Ses dosyaları</text>
+      <line x1="287" y1="462" x2="287" y2="488" class="arr-line" stroke="#888780" marker-end="url(#arr1)"/>
+    </svg>
+
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#EEEDFE;border:1px solid #534AB7;"></div>Mobil / Gateway</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#E1F5EE;border:1px solid #0F6E56;"></div>Backend</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#FAECE7;border:1px solid #993C1D;"></div>Dış servisler</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#F1EFE8;border:1px solid #5F5E5A;"></div>Depolama</div>
+    </div>
+  </div>
+
+  <div class="note">
+    <strong>Mimari özeti:</strong> Mobil uygulama tüm istekleri API Gateway üzerinden iletir. Gateway JWT doğrulaması ve rate limiting yapar. Backend servisleri birbirinden bağımsız çalışır — masal servisi Claude API'yi, ses servisi OpenAI TTS ve S3'ü, ödeme servisi RevenueCat'i yönetir. <strong>İş kuralı:</strong> Masal metni önce üretilip kullanıcıya gösterilir; ses dönüşümü yalnızca kullanıcı talep ettiğinde tetiklenir. Her masal maksimum 1.300 kelime (~10 dk ses) ile sınırlıdır.
+  </div>
+
+  <h2>Diyagram 2 — Masal Üretim Akışı</h2>
+  <div class="diagram-wrap">
+    <svg width="100%" viewBox="0 0 680 520" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <marker id="arr2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M2 1L8 5L2 9" fill="none" stroke="context-stroke" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </marker>
+      </defs>
+
+      <!-- Lane labels -->
+      <text x="120" y="28" text-anchor="middle" class="lane-label">Kullanıcı</text>
+      <text x="300" y="28" text-anchor="middle" class="lane-label">Backend</text>
+      <text x="480" y="28" text-anchor="middle" class="lane-label">Claude API</text>
+      <text x="620" y="28" text-anchor="middle" class="lane-label">OpenAI TTS</text>
+
+      <!-- Lane dividers -->
+      <line x1="120" y1="36" x2="120" y2="500" class="lane-line"/>
+      <line x1="300" y1="36" x2="300" y2="500" class="lane-line"/>
+      <line x1="480" y1="36" x2="480" y2="500" class="lane-line"/>
+      <line x1="620" y1="36" x2="620" y2="500" class="lane-line"/>
+
+      <!-- Step 1 -->
+      <rect x="40" y="50" width="160" height="44" rx="8" class="node-purple-fill" stroke-width="0.5"/>
+      <text x="120" y="66" text-anchor="middle" dominant-baseline="central" class="node-title-purple">Form doldur</text>
+      <text x="120" y="82" text-anchor="middle" dominant-baseline="central" class="node-sub-purple">Karakter · mekan · konu</text>
+
+      <line x1="200" y1="72" x2="218" y2="72" class="arr-line" stroke="#7F77DD" marker-end="url(#arr2)"/>
+
+      <rect x="220" y="50" width="160" height="44" rx="8" class="node-teal-fill" stroke-width="0.5"/>
+      <text x="300" y="66" text-anchor="middle" dominant-baseline="central" class="node-title-teal">Kredi kontrolü</text>
+      <text x="300" y="82" text-anchor="middle" dominant-baseline="central" class="node-sub-teal">Abonelik / bakiye</text>
+
+      <!-- Step 2 -->
+      <line x1="300" y1="94" x2="300" y2="122" class="arr-line" stroke="#1D9E75" marker-end="url(#arr2)"/>
+
+      <rect x="220" y="122" width="160" height="44" rx="8" class="node-teal-fill" stroke-width="0.5"/>
+      <text x="300" y="138" text-anchor="middle" dominant-baseline="central" class="node-title-teal">Prompt oluştur</text>
+      <text x="300" y="154" text-anchor="middle" dominant-baseline="central" class="node-sub-teal">Yaş + parametreler</text>
+
+      <line x1="380" y1="144" x2="398" y2="144" class="arr-line" stroke="#1D9E75" marker-end="url(#arr2)"/>
+
+      <rect x="400" y="122" width="160" height="44" rx="8" class="node-coral-fill" stroke-width="0.5"/>
+      <text x="480" y="138" text-anchor="middle" dominant-baseline="central" class="node-title-coral">Claude API</text>
+      <text x="480" y="154" text-anchor="middle" dominant-baseline="central" class="node-sub-coral">Masal metni üret</text>
+
+      <!-- Step 3 -->
+      <line x1="480" y1="166" x2="480" y2="194" class="arr-line" stroke="#D85A30" marker-end="url(#arr2)"/>
+
+      <rect x="400" y="194" width="160" height="44" rx="8" class="node-coral-fill" stroke-width="0.5"/>
+      <text x="480" y="210" text-anchor="middle" dominant-baseline="central" class="node-title-coral">İçerik doğrula</text>
+      <text x="480" y="226" text-anchor="middle" dominant-baseline="central" class="node-sub-coral">Güvenlik filtresi</text>
+
+      <line x1="400" y1="216" x2="382" y2="216" class="arr-line" stroke="#D85A30" marker-end="url(#arr2)"/>
+
+      <rect x="220" y="194" width="160" height="44" rx="8" class="node-teal-fill" stroke-width="0.5"/>
+      <text x="300" y="210" text-anchor="middle" dominant-baseline="central" class="node-title-teal">Masalı kaydet</text>
+      <text x="300" y="226" text-anchor="middle" dominant-baseline="central" class="node-sub-teal">PostgreSQL · JSON</text>
+
+      <line x1="220" y1="216" x2="202" y2="216" class="arr-line" stroke="#1D9E75" marker-end="url(#arr2)"/>
+
+      <rect x="40" y="194" width="160" height="44" rx="8" class="node-purple-fill" stroke-width="0.5"/>
+      <text x="120" y="210" text-anchor="middle" dominant-baseline="central" class="node-title-purple">Masalı göster</text>
+      <text x="120" y="226" text-anchor="middle" dominant-baseline="central" class="node-sub-purple">Okuma ekranı açılır</text>
+
+      <!-- Divider -->
+      <line x1="30" y1="258" x2="650" y2="258" class="divider-line"/>
+      <text x="340" y="274" text-anchor="middle" class="divider-label">— sesli anlatım istendiyse —</text>
+
+      <!-- TTS flow -->
+      <line x1="120" y1="285" x2="120" y2="313" class="arr-line" stroke="#7F77DD" marker-end="url(#arr2)"/>
+
+      <rect x="40" y="313" width="160" height="44" rx="8" class="node-purple-fill" stroke-width="0.5"/>
+      <text x="120" y="329" text-anchor="middle" dominant-baseline="central" class="node-title-purple">Ses iste</text>
+      <text x="120" y="345" text-anchor="middle" dominant-baseline="central" class="node-sub-purple">Kullanıcı butona basar</text>
+
+      <line x1="200" y1="335" x2="218" y2="335" class="arr-line" stroke="#7F77DD" marker-end="url(#arr2)"/>
+
+      <rect x="220" y="313" width="160" height="44" rx="8" class="node-teal-fill" stroke-width="0.5"/>
+      <text x="300" y="329" text-anchor="middle" dominant-baseline="central" class="node-title-teal">Cache kontrol</text>
+      <text x="300" y="345" text-anchor="middle" dominant-baseline="central" class="node-sub-teal">S3'te var mı?</text>
+
+      <line x1="380" y1="335" x2="398" y2="335" class="arr-line" stroke="#1D9E75" marker-end="url(#arr2)"/>
+
+      <rect x="400" y="313" width="160" height="44" rx="8" class="node-coral-fill" stroke-width="0.5"/>
+      <text x="480" y="329" text-anchor="middle" dominant-baseline="central" class="node-title-coral">OpenAI TTS</text>
+      <text x="480" y="345" text-anchor="middle" dominant-baseline="central" class="node-sub-coral">Türkçe ses üret</text>
+
+      <line x1="560" y1="335" x2="578" y2="335" class="arr-line" stroke="#D85A30" marker-end="url(#arr2)"/>
+
+      <rect x="580" y="313" width="80" height="44" rx="8" class="node-gray-fill" stroke-width="0.5"/>
+      <text x="620" y="329" text-anchor="middle" dominant-baseline="central" class="node-title-gray">AWS S3</text>
+      <text x="620" y="345" text-anchor="middle" dominant-baseline="central" class="node-sub-gray">Ses sakla</text>
+
+      <line x1="580" y1="357" x2="382" y2="385" class="arr-line" stroke="#888780" marker-end="url(#arr2)"/>
+
+      <rect x="220" y="385" width="160" height="44" rx="8" class="node-teal-fill" stroke-width="0.5"/>
+      <text x="300" y="401" text-anchor="middle" dominant-baseline="central" class="node-title-teal">URL döndür</text>
+      <text x="300" y="417" text-anchor="middle" dominant-baseline="central" class="node-sub-teal">İmzalı S3 linki</text>
+
+      <line x1="220" y1="407" x2="202" y2="407" class="arr-line" stroke="#1D9E75" marker-end="url(#arr2)"/>
+
+      <rect x="40" y="385" width="160" height="44" rx="8" class="node-purple-fill" stroke-width="0.5"/>
+      <text x="120" y="401" text-anchor="middle" dominant-baseline="central" class="node-title-purple">Ses oynat</text>
+      <text x="120" y="417" text-anchor="middle" dominant-baseline="central" class="node-sub-purple">Oynatıcı ekranda açılır</text>
+    </svg>
+
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#EEEDFE;border:1px solid #534AB7;"></div>Kullanıcı aksiyonu</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#E1F5EE;border:1px solid #0F6E56;"></div>Backend işlemi</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#FAECE7;border:1px solid #993C1D;"></div>Dış API çağrısı</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#F1EFE8;border:1px solid #5F5E5A;"></div>Depolama</div>
+    </div>
+  </div>
+
+  <div class="note">
+    <strong>Akış özeti:</strong> Kullanıcı formu doldurup gönderir → Backend kredi kontrolü yapar → Yaş bilgisiyle prompt oluşturur → Claude API masalı üretir (maks. 1.300 kelime) → Backend kelime sayısını doğrular → İçerik güvenlik filtresinden geçer → PostgreSQL'e kaydedilir → <strong>Metin olarak kullanıcıya gösterilir.</strong> Kullanıcı "Sesli dinle" butonuna basarsa TTS akışı ayrıca tetiklenir: S3'te cache yoksa OpenAI TTS (tts-1, onyx voice) çağrılır, ses S3'te saklanır ve 1 saatlik imzalı URL kullanıcıya döner. <strong>audioUrl DB'de saklanmaz</strong> — her istekte on-the-fly üretilir (BR-002).
+  </div>
+
+  <div class="footer">MasalAI Teknik Mimari v2.0 — Mart 2026</div>
+</div>
+</body>
+</html>

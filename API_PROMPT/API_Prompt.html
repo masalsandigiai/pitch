@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MasalAI — Claude API Prompt Tasarımı v1.1</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Inter', system-ui, sans-serif; background: #F4F2FF; color: #1A0A2E; padding: 40px 24px 80px; line-height: 1.7; }
+  .page { max-width: 900px; margin: 0 auto; }
+  h1 { font-size: 28px; font-weight: 700; letter-spacing: -1px; margin-bottom: 6px; }
+  .sub { font-size: 14px; color: #6B5B95; margin-bottom: 40px; }
+  h2 { font-size: 17px; font-weight: 600; color: #1A0A2E; margin: 40px 0 16px; padding-bottom: 10px; border-bottom: 1px solid #E8E3FF; }
+  p { font-size: 14px; color: #4B3590; margin-bottom: 12px; }
+  .section { margin-bottom: 40px; }
+  pre { background: #1A0A2E; color: #CEC8F8; border-radius: 12px; padding: 20px 22px; font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.8; overflow-x: auto; margin-bottom: 16px; border: 1px solid #2D1B6E; }
+  .kw  { color: #AFA9EC; }
+  .str { color: #9FE1CB; }
+  .cm  { color: #5F5E5A; font-style: italic; }
+  .fn  { color: #F5A623; }
+  .nb  { color: #FF6B8A; }
+  .tag { color: #CEC8F8; }
+  .card { background: #fff; border: 1px solid #E8E3FF; border-radius: 14px; padding: 18px 20px; margin-bottom: 14px; }
+  .card-title { font-size: 13px; font-weight: 600; color: #1A0A2E; margin-bottom: 6px; }
+  .card-body { font-size: 13px; color: #4B3590; line-height: 1.65; }
+  .age-tabs { display: flex; gap: 4px; background: #E8E3FF; border-radius: 10px; padding: 4px; margin-bottom: 16px; }
+  .age-tab { flex: 1; padding: 8px; border: none; background: transparent; border-radius: 7px; font-size: 13px; font-weight: 500; color: #6B5B95; cursor: pointer; font-family: inherit; transition: all .15s; }
+  .age-tab.active { background: #fff; color: #1A0A2E; }
+  .age-panel { display: none; }
+  .age-panel.active { display: block; }
+  .metric-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; margin-bottom: 20px; }
+  .metric { background: #fff; border: 1px solid #E8E3FF; border-radius: 10px; padding: 14px; }
+  .metric-label { font-size: 11px; font-weight: 600; color: #9585C5; text-transform: uppercase; letter-spacing: .05em; margin-bottom: 4px; }
+  .metric-value { font-size: 20px; font-weight: 700; color: #1A0A2E; }
+  .metric-sub { font-size: 11px; color: #9585C5; margin-top: 3px; }
+  .flow-row { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+  .flow-step { background: #EEEDFE; color: #3C3489; border-radius: 8px; padding: 8px 14px; font-size: 13px; font-weight: 500; }
+  .flow-step.warn { background: #FAEEDA; color: #633806; }
+  .flow-step.danger { background: #FCEBEB; color: #501313; }
+  .flow-step.success { background: #E1F5EE; color: #085041; }
+  .flow-arrow { color: #9585C5; font-size: 18px; }
+  .rule-badge { display: inline-block; font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 6px; background: #FAEEDA; color: #412402; margin-left: 8px; vertical-align: middle; }
+  .impl-badge { display: inline-block; font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 6px; background: #E1F5EE; color: #085041; margin-left: 8px; vertical-align: middle; }
+  .tbl { width: 100%; border-collapse: collapse; background: #fff; border-radius: 12px; overflow: hidden; border: 1px solid #E8E3FF; margin-bottom: 16px; }
+  .tbl th { text-align: left; font-size: 11px; font-weight: 600; color: #9585C5; text-transform: uppercase; letter-spacing: .06em; padding: 10px 14px; background: #F9F8FF; border-bottom: 1px solid #E8E3FF; }
+  .tbl td { padding: 10px 14px; font-size: 13px; color: #1A0A2E; border-bottom: 1px solid #F4F2FF; vertical-align: top; }
+  .tbl tr:last-child td { border-bottom: none; }
+  .tbl code { background: #EEEDFE; color: #3C3489; padding: 2px 6px; border-radius: 4px; font-size: 11px; }
+  .footer { text-align: center; margin-top: 48px; font-size: 12px; color: #9585C5; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <h1>🤖 Claude API Prompt Tasarımı</h1>
+  <div class="sub">MasalAI v1.1 · claude-sonnet-4-20250514 · BR-001 kelime limiti · Türkçe çocuk masalı</div>
+
+  <div class="section">
+    <h2>Genel Bakış</h2>
+    <div class="metric-row">
+      <div class="metric">
+        <div class="metric-label">Model</div>
+        <div class="metric-value" style="font-size:13px;">claude-sonnet-4</div>
+        <div class="metric-sub">20250514</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Max tokens</div>
+        <div class="metric-value">2048</div>
+        <div class="metric-sub">Output için yeterli</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Kelime limiti</div>
+        <div class="metric-value">1.300</div>
+        <div class="metric-sub">BR-001</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Retry</div>
+        <div class="metric-value">1x</div>
+        <div class="metric-sub">Sonra truncation</div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Implementasyon: <code>claude.service.ts</code></div>
+      <div class="card-body">
+        Prompt ve kelime sayısı doğrulaması <code>src/services/claude.service.ts</code> içinde uygulanmıştır.
+        Claude'un beyan ettiği <code>word_count</code> değerine güvenilmez — backend gerçek kelime sayısını kendisi hesaplar.
+        JSON fence'ler (<code>```json</code>) temizlenir. <code>age_appropriate: false</code> ise hata döner.
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Üretim Akışı <span class="rule-badge">BR-001</span> <span class="impl-badge">✅ Uygulandı</span></h2>
+    <div class="flow-row">
+      <div class="flow-step">1. buildPrompt(params, ageGroup)</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">2. Claude API çağrısı</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">3. JSON parse + gerçek word_count</div>
+    </div>
+    <div class="flow-row">
+      <div class="flow-step success">≤ 1300 → Kaydet ✓</div>
+      <div class="flow-arrow">|</div>
+      <div class="flow-step danger">> 1300 → Retry (shortenRequest: true)</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step warn">Hâlâ > 1300 → truncateToLimit()</div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step">wasTruncated: true</div>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>Yaş Grubuna Göre Prompt Stratejisi</h2>
+    <div class="age-tabs">
+      <button class="age-tab active" onclick="switchAge('24', this)">2–4 Yaş</button>
+      <button class="age-tab" onclick="switchAge('56', this)">5–6 Yaş</button>
+      <button class="age-tab" onclick="switchAge('78', this)">7–8 Yaş</button>
+    </div>
+
+    <div id="panel-24" class="age-panel active">
+      <div class="metric-row">
+        <div class="metric"><div class="metric-label">Hedef kelime</div><div class="metric-value">400–600</div></div>
+        <div class="metric"><div class="metric-label">Cümle uzunluğu</div><div class="metric-value" style="font-size:15px;">5–8 kelime</div></div>
+        <div class="metric"><div class="metric-label">Özellik</div><div class="metric-value" style="font-size:13px;">Ritim, tekrar</div></div>
+        <div class="metric"><div class="metric-label">Tahmini ses</div><div class="metric-value">~3–5 dk</div></div>
+      </div>
+      <pre><span class="cm">// buildPrompt() — 2-4 yaş (shortenRequest = false)</span>
+<span class="str">"Sen bir Türk çocuk masalı yazarısın. Aşağıdaki bilgilerle 2-4 yaş grubuna
+uygun, eğitici ve eğlenceli bir masal yaz.
+
+Kurallar:
+- Kelime sayısı: 400-600 kelime (ZORUNLU — kesinlikle 1300 kelimeyi geçme)
+- Cümleler 5-8 kelime olmalı. Ritim, tekrar ve onomatopeia kullan.
+- Masalın net bir başlangıç, gelişme ve sonu olmalı
+- Çocuğa yönelik, anlaşılır Türkçe kullan
+- Şiddet, korku veya olumsuz içerik YASAK
+- Masalın sonunda kısa bir ders/değer çıkar
+
+YALNIZCA şu JSON formatında yanıt ver, başka hiçbir şey yazma:
+{
+  \"title\": \"Masalın başlığı\",
+  \"content\": \"Masalın tam metni\",
+  \"word_count\": 487,
+  \"lesson\": \"Masaldan çıkarılan ders (1 cümle)\",
+  \"age_appropriate\": true
+}"</span></pre>
+    </div>
+
+    <div id="panel-56" class="age-panel">
+      <div class="metric-row">
+        <div class="metric"><div class="metric-label">Hedef kelime</div><div class="metric-value">700–900</div></div>
+        <div class="metric"><div class="metric-label">Cümle uzunluğu</div><div class="metric-value" style="font-size:15px;">8–12 kelime</div></div>
+        <div class="metric"><div class="metric-label">Özellik</div><div class="metric-value" style="font-size:13px;">Diyalog, merak</div></div>
+        <div class="metric"><div class="metric-label">Tahmini ses</div><div class="metric-value">~5–7 dk</div></div>
+      </div>
+      <pre><span class="cm">// buildPrompt() — 5-6 yaş</span>
+<span class="str">"...
+- Kelime sayısı: 700-900 kelime (ZORUNLU — kesinlikle 1300 kelimeyi geçme)
+- Cümleler 8-12 kelime olmalı. Diyalog, merak ve duygu ekle.
+..."</span></pre>
+    </div>
+
+    <div id="panel-78" class="age-panel">
+      <div class="metric-row">
+        <div class="metric"><div class="metric-label">Hedef kelime</div><div class="metric-value">900–1200</div></div>
+        <div class="metric"><div class="metric-label">Cümle uzunluğu</div><div class="metric-value" style="font-size:15px;">10–15 kelime</div></div>
+        <div class="metric"><div class="metric-label">Özellik</div><div class="metric-value" style="font-size:13px;">Karakter derinliği</div></div>
+        <div class="metric"><div class="metric-label">Tahmini ses</div><div class="metric-value">~7–9 dk</div></div>
+      </div>
+      <pre><span class="cm">// buildPrompt() — 7-8 yaş</span>
+<span class="str">"...
+- Kelime sayısı: 900-1200 kelime (ZORUNLU — kesinlikle 1300 kelimeyi geçme)
+- Cümleler 10-15 kelime olmalı. Karakter derinliği ve hafif mizah kullan.
+..."</span></pre>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2>JSON Output Şeması</h2>
+    <p>Claude'dan yalnızca bu JSON döndürmesi istenir. Markdown fence (<code>```json</code>) varsa backend strip eder.</p>
+    <pre>{
+  <span class="tag">"title"</span>         : <span class="str">"string — Masalın başlığı (3-6 kelime)"</span>,
+  <span class="tag">"content"</span>        : <span class="str">"string — Tam metin, paragraflar \\n\\n ile ayrılır"</span>,
+  <span class="tag">"word_count"</span>     : <span class="nb">850</span>,  <span class="cm">// Claude'un beyanı — backend yeniden sayar!</span>
+  <span class="tag">"lesson"</span>         : <span class="str">"string — Ana ders, tek cümle"</span>,
+  <span class="tag">"age_appropriate"</span>: <span class="kw">true</span>   <span class="cm">// false ise backend hata döner</span>
+}</pre>
+  </div>
+
+  <div class="section">
+    <h2>Retry Prompt (BR-001 aşım durumunda)</h2>
+    <pre><span class="cm">// shortenRequest = true olduğunda buildPrompt() buna ekler:</span>
+
+⚠️ ÖNEMLİ: Önceki yanıt <span class="nb">1420</span> kelimeyi aştı.
+Bu sefer MUTLAKA <span class="nb">700</span>-<span class="nb">900</span> kelime arasında tut.</pre>
+  </div>
+
+  <div class="section">
+    <h2>Truncation Algoritması</h2>
+    <pre><span class="cm">// truncateToLimit() — cümle ortasında kesmez</span>
+<span class="kw">function</span> <span class="fn">truncateToLimit</span>(content: <span class="str">string</span>, maxWords: <span class="nb">1300</span>): <span class="str">string</span> {
+  <span class="cm">// Son nokta/ünlem/soru işaretine kadar git</span>
+  <span class="cm">// Kelime sayısının %70'inden kısa cümle bulunamazsa "..." ekle</span>
+}</pre>
+  </div>
+
+  <div class="section">
+    <h2>İçerik Güvenliği Kuralları</h2>
+    <table class="tbl">
+      <thead><tr><th>Kural</th><th>Detay</th><th>Uygulama</th></tr></thead>
+      <tbody>
+        <tr><td>Şiddet yasak</td><td>Kan, ölüm, fiziksel zarar</td><td>Sistem prompt</td></tr>
+        <tr><td>Korku yasak</td><td>Kabus, karanlık, tehdit edici varlıklar</td><td>Sistem prompt</td></tr>
+        <tr><td>Olumlu son zorunlu</td><td>Mutlu veya umut verici bitiş</td><td>Sistem prompt</td></tr>
+        <tr><td>Yaş uygunluğu</td><td><code>age_appropriate: false</code> → hata</td><td>Output validation</td></tr>
+        <tr><td>Yetişkin temalar</td><td>Para, güç, romantizm yasak</td><td>Sistem prompt</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section">
+    <h2>Test Komutu</h2>
+    <pre><span class="cm"># claude.service.ts test — tüm yaş grupları</span>
+<span class="fn">ANTHROPIC_API_KEY</span>=sk-ant-... npx ts-node \
+  -r tsconfig-paths/register \
+  src/services/claude/prompt.test.ts
+
+<span class="cm"># Beklenen çıktı:</span>
+<span class="cm"># ✅ 2-4 yaş — 487 kelime   ~2500ms</span>
+<span class="cm"># ✅ 5-6 yaş — 812 kelime   ~3800ms</span>
+<span class="cm"># ✅ 7-8 yaş — 1087 kelime  ~5200ms</span></pre>
+  </div>
+
+  <div class="footer">MasalAI Claude API Prompt Tasarımı v1.1 — Mart 2026</div>
+</div>
+<script>
+function switchAge(id, btn) {
+  document.querySelectorAll('.age-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.age-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+</script>
+</body>
+</html>
