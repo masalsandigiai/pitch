@@ -1,0 +1,1394 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>MasalAI — Backend Dokümantasyonu</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:        #0D1117;
+  --bg2:       #161B22;
+  --bg3:       #1C2128;
+  --border:    rgba(255,255,255,.08);
+  --border2:   rgba(255,255,255,.13);
+  --text:      #E6EDF3;
+  --muted:     #7D8590;
+  --muted2:    #484F58;
+
+  --get:       #3FB950;
+  --get-bg:    rgba(63,185,80,.12);
+  --get-bd:    rgba(63,185,80,.3);
+  --post:      #58A6FF;
+  --post-bg:   rgba(88,166,255,.12);
+  --post-bd:   rgba(88,166,255,.3);
+  --patch:     #D29922;
+  --patch-bg:  rgba(210,153,34,.12);
+  --patch-bd:  rgba(210,153,34,.3);
+  --delete:    #F85149;
+  --delete-bg: rgba(248,81,73,.12);
+  --delete-bd: rgba(248,81,73,.3);
+
+  --purple:    #BC8CFF;
+  --purple-bg: rgba(188,140,255,.1);
+  --gold:      #F5A623;
+  --green:     #3FB950;
+  --pink:      #FF6B8A;
+
+  --sidebar-w: 260px;
+  --mono: 'JetBrains Mono', monospace;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  display: flex;
+}
+
+/* ── SIDEBAR ── */
+.sidebar {
+  width: var(--sidebar-w);
+  min-height: 100vh;
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
+  position: fixed; top: 0; left: 0; bottom: 0;
+  overflow-y: auto;
+  z-index: 50;
+  display: flex; flex-direction: column;
+}
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-track { background: transparent; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+.sidebar-header {
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid var(--border);
+  position: sticky; top: 0;
+  background: var(--bg2);
+  z-index: 1;
+}
+.sidebar-logo {
+  font-size: 15px; font-weight: 600; color: var(--text);
+  display: flex; align-items: center; gap: 8px;
+  text-decoration: none;
+}
+.sidebar-logo span { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+.sidebar-version {
+  display: inline-flex; align-items: center; gap: 5px;
+  font-family: var(--mono); font-size: 10px; color: var(--green);
+  background: var(--get-bg); border: 1px solid var(--get-bd);
+  padding: 2px 8px; border-radius: 4px; margin-top: 8px;
+}
+
+.sidebar-nav { padding: 12px 0; flex: 1; }
+.nav-section { margin-bottom: 4px; }
+.nav-section-title {
+  font-size: 10px; font-weight: 600; color: var(--muted2);
+  text-transform: uppercase; letter-spacing: .1em;
+  padding: 8px 20px 4px;
+}
+.nav-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 7px 20px; font-size: 13px; color: var(--muted);
+  cursor: pointer; text-decoration: none;
+  transition: all .15s; border-left: 2px solid transparent;
+}
+.nav-item:hover { color: var(--text); background: rgba(255,255,255,.04); }
+.nav-item.active { color: var(--text); border-left-color: var(--purple); background: var(--purple-bg); }
+.nav-item .method-badge {
+  font-family: var(--mono); font-size: 9px; font-weight: 600;
+  padding: 1px 5px; border-radius: 3px; flex-shrink: 0;
+}
+.nav-item .nb-get    { background: var(--get-bg);    color: var(--get);    border: 1px solid var(--get-bd); }
+.nav-item .nb-post   { background: var(--post-bg);   color: var(--post);   border: 1px solid var(--post-bd); }
+.nav-item .nb-patch  { background: var(--patch-bg);  color: var(--patch);  border: 1px solid var(--patch-bd); }
+.nav-item .nb-delete { background: var(--delete-bg); color: var(--delete); border: 1px solid var(--delete-bd); }
+
+/* ── MAIN CONTENT ── */
+.main {
+  margin-left: var(--sidebar-w);
+  flex: 1; min-width: 0;
+  padding: 40px 48px;
+  max-width: 960px;
+}
+
+/* ── SECTION HEADERS ── */
+.doc-section { margin-bottom: 56px; scroll-margin-top: 24px; }
+.section-eyebrow {
+  font-family: var(--mono); font-size: 11px; color: var(--purple);
+  letter-spacing: .06em; margin-bottom: 8px;
+  display: flex; align-items: center; gap: 8px;
+}
+.section-eyebrow::before {
+  content: ''; display: block; width: 20px; height: 1px; background: var(--purple);
+}
+.section-title {
+  font-size: 26px; font-weight: 600; color: var(--text);
+  letter-spacing: -.4px; margin-bottom: 8px;
+}
+.section-desc { font-size: 14px; color: var(--muted); line-height: 1.7; max-width: 700px; }
+.section-divider { height: 1px; background: var(--border); margin: 32px 0; }
+
+/* ── ENDPOINT CARDS ── */
+.endpoint-card {
+  border: 1px solid var(--border);
+  border-radius: 10px; margin-bottom: 12px;
+  overflow: hidden;
+  transition: border-color .2s;
+}
+.endpoint-card:hover { border-color: var(--border2); }
+
+.endpoint-header {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 18px; cursor: pointer;
+  background: var(--bg2);
+  user-select: none;
+}
+.endpoint-header:hover { background: var(--bg3); }
+
+.method-tag {
+  font-family: var(--mono); font-size: 11px; font-weight: 600;
+  padding: 3px 10px; border-radius: 5px; flex-shrink: 0;
+  min-width: 58px; text-align: center;
+}
+.mt-get    { background: var(--get-bg);    color: var(--get);    border: 1px solid var(--get-bd); }
+.mt-post   { background: var(--post-bg);   color: var(--post);   border: 1px solid var(--post-bd); }
+.mt-patch  { background: var(--patch-bg);  color: var(--patch);  border: 1px solid var(--patch-bd); }
+.mt-delete { background: var(--delete-bg); color: var(--delete); border: 1px solid var(--delete-bd); }
+
+.endpoint-path {
+  font-family: var(--mono); font-size: 13px; color: var(--text); flex: 1;
+}
+.endpoint-path .path-param { color: var(--gold); }
+.endpoint-summary { font-size: 13px; color: var(--muted); margin-left: auto; padding-left: 16px; }
+.endpoint-chevron { color: var(--muted); font-size: 12px; transition: transform .2s; flex-shrink: 0; }
+.endpoint-card.open .endpoint-chevron { transform: rotate(180deg); }
+
+.endpoint-body {
+  display: none; padding: 20px 18px;
+  border-top: 1px solid var(--border);
+  background: var(--bg);
+}
+.endpoint-card.open .endpoint-body { display: block; }
+
+/* ── PARAMS / REQUEST / RESPONSE ── */
+.ep-label {
+  font-size: 11px; font-weight: 600; color: var(--muted);
+  text-transform: uppercase; letter-spacing: .08em;
+  margin-bottom: 8px; margin-top: 16px;
+}
+.ep-label:first-child { margin-top: 0; }
+
+.param-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 4px; }
+.param-table th {
+  text-align: left; padding: 6px 10px;
+  font-size: 10px; font-weight: 600; color: var(--muted2);
+  text-transform: uppercase; letter-spacing: .06em;
+  border-bottom: 1px solid var(--border);
+}
+.param-table td { padding: 8px 10px; border-bottom: 1px solid rgba(255,255,255,.04); vertical-align: top; }
+.param-table tr:last-child td { border-bottom: none; }
+.param-name { font-family: var(--mono); font-size: 12px; color: var(--purple); }
+.param-type { font-family: var(--mono); font-size: 11px; color: var(--muted); }
+.param-req  { font-family: var(--mono); font-size: 10px; color: var(--delete); }
+.param-opt  { font-family: var(--mono); font-size: 10px; color: var(--muted2); }
+.param-desc { font-size: 12px; color: var(--muted); }
+
+.code-block {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 8px; padding: 14px 16px;
+  font-family: var(--mono); font-size: 12px; line-height: 1.7;
+  overflow-x: auto; margin-top: 4px;
+}
+.code-block::-webkit-scrollbar { height: 4px; }
+.code-block::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+.cb-key   { color: #79C0FF; }
+.cb-str   { color: #A5D6FF; }
+.cb-num   { color: var(--gold); }
+.cb-bool  { color: var(--purple); }
+.cb-null  { color: var(--muted); }
+.cb-comment { color: var(--muted2); font-style: italic; }
+
+.response-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--mono); font-size: 11px; font-weight: 600;
+  padding: 3px 10px; border-radius: 5px; margin-bottom: 6px;
+}
+.rb-200 { background: var(--get-bg);    color: var(--get);    border: 1px solid var(--get-bd); }
+.rb-201 { background: var(--post-bg);   color: var(--post);   border: 1px solid var(--post-bd); }
+.rb-400 { background: var(--patch-bg);  color: var(--patch);  border: 1px solid var(--patch-bd); }
+.rb-401 { background: var(--delete-bg); color: var(--delete); border: 1px solid var(--delete-bd); }
+.rb-403 { background: var(--delete-bg); color: var(--delete); border: 1px solid var(--delete-bd); }
+
+/* ── FLOW DIAGRAMS ── */
+.flow-wrap {
+  background: var(--bg2); border: 1px solid var(--border);
+  border-radius: 10px; padding: 24px; margin-top: 8px;
+  overflow-x: auto;
+}
+.flow {
+  display: flex; align-items: center; gap: 0;
+  flex-wrap: nowrap; min-width: max-content;
+}
+.flow-step {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 6px;
+}
+.flow-box {
+  background: var(--bg3); border: 1px solid var(--border2);
+  border-radius: 8px; padding: 8px 14px;
+  font-size: 12px; font-weight: 500; color: var(--text);
+  text-align: center; white-space: nowrap;
+  min-width: 110px;
+}
+.flow-box.fb-purple { border-color: rgba(188,140,255,.4); background: var(--purple-bg); color: var(--purple); }
+.flow-box.fb-green  { border-color: var(--get-bd); background: var(--get-bg); color: var(--get); }
+.flow-box.fb-blue   { border-color: var(--post-bd); background: var(--post-bg); color: var(--post); }
+.flow-box.fb-gold   { border-color: rgba(245,166,35,.3); background: rgba(245,166,35,.1); color: var(--gold); }
+.flow-box.fb-red    { border-color: var(--delete-bd); background: var(--delete-bg); color: var(--delete); }
+.flow-box.fb-muted  { border-color: var(--border); background: transparent; color: var(--muted); }
+.flow-label { font-size: 10px; color: var(--muted2); font-family: var(--mono); }
+.flow-arrow {
+  font-size: 14px; color: var(--muted2); padding: 0 6px;
+  align-self: center; margin-bottom: 20px;
+}
+.flow-arrow.fa-down { transform: rotate(90deg); }
+
+/* Vertical flow */
+.flow-v { display: flex; flex-direction: column; gap: 0; align-items: flex-start; }
+.flow-v .flow-step { flex-direction: row; align-items: center; gap: 12px; }
+.flow-v .flow-box { min-width: 180px; }
+.flow-v .flow-arrow { padding: 4px 0; margin-bottom: 0; margin-left: 90px; }
+
+/* ── SCHEMA ── */
+.schema-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.schema-table th {
+  text-align: left; padding: 8px 12px;
+  font-size: 10px; font-weight: 600; color: var(--muted2);
+  text-transform: uppercase; letter-spacing: .08em;
+  background: var(--bg2); border-bottom: 1px solid var(--border2);
+}
+.schema-table td { padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: top; }
+.schema-table tr:last-child td { border-bottom: none; }
+.schema-table tr:hover td { background: rgba(255,255,255,.02); }
+.col-name  { font-family: var(--mono); font-size: 12px; color: var(--purple); }
+.col-type  { font-family: var(--mono); font-size: 11px; color: var(--gold); }
+.col-note  { font-size: 12px; color: var(--muted); }
+.col-const { font-family: var(--mono); font-size: 11px; color: var(--get); }
+.col-fk    { font-family: var(--mono); font-size: 11px; color: var(--post); }
+
+/* ── INFO BOXES ── */
+.info-box {
+  display: flex; gap: 12px; align-items: flex-start;
+  padding: 14px 16px; border-radius: 8px; margin: 12px 0;
+  font-size: 13px; line-height: 1.6;
+}
+.info-box.ib-blue   { background: var(--post-bg);   border: 1px solid var(--post-bd);   color: #A5C8FF; }
+.info-box.ib-green  { background: var(--get-bg);    border: 1px solid var(--get-bd);    color: #9FE1CB; }
+.info-box.ib-gold   { background: rgba(245,166,35,.1); border: 1px solid rgba(245,166,35,.3); color: #FAC775; }
+.info-box.ib-red    { background: var(--delete-bg); border: 1px solid var(--delete-bd); color: #F9AEAB; }
+.info-box .ib-icon  { font-size: 15px; flex-shrink: 0; margin-top: 1px; }
+
+/* ── ENV TABLE ── */
+.env-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.env-table th {
+  text-align: left; padding: 8px 12px;
+  font-size: 10px; font-weight: 600; color: var(--muted2);
+  text-transform: uppercase; letter-spacing: .08em;
+  background: var(--bg2); border-bottom: 1px solid var(--border2);
+}
+.env-table td { padding: 9px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; font-family: var(--mono); font-size: 12px; }
+.env-table tr:last-child td { border-bottom: none; }
+.env-key  { color: var(--purple); }
+.env-val  { color: var(--muted); font-size: 11px; }
+.env-desc { font-family: 'DM Sans', sans-serif; font-size: 12px; color: var(--muted); }
+.env-req  { color: var(--delete); font-size: 10px; }
+.env-opt  { color: var(--muted2); font-size: 10px; }
+
+/* ── TAGS ── */
+.tag {
+  display: inline-block; font-size: 11px; font-weight: 500;
+  padding: 2px 8px; border-radius: 4px;
+  background: rgba(255,255,255,.07); color: var(--muted);
+  font-family: var(--mono);
+}
+.tag-purple { background: var(--purple-bg); color: var(--purple); }
+.tag-green  { background: var(--get-bg);    color: var(--get); }
+.tag-gold   { background: rgba(245,166,35,.1); color: var(--gold); }
+.tag-red    { background: var(--delete-bg); color: var(--delete); }
+.tag-blue   { background: var(--post-bg);   color: var(--post); }
+
+/* ── BR RULE ── */
+.br-card {
+  border: 1px solid var(--border); border-radius: 10px;
+  overflow: hidden; margin-bottom: 14px;
+}
+.br-header {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 18px; background: var(--bg2);
+}
+.br-id {
+  font-family: var(--mono); font-size: 11px; font-weight: 700;
+  color: var(--gold); background: rgba(245,166,35,.12);
+  border: 1px solid rgba(245,166,35,.3);
+  padding: 3px 10px; border-radius: 5px;
+}
+.br-title { font-size: 14px; font-weight: 500; }
+.br-body { padding: 16px 18px; background: var(--bg); }
+
+/* ── HERO HEADER ── */
+.page-hero {
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  padding: 48px 48px 36px;
+  margin: -40px -48px 48px;
+}
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--mono); font-size: 11px; color: var(--green);
+  background: var(--get-bg); border: 1px solid var(--get-bd);
+  padding: 4px 12px; border-radius: 6px; margin-bottom: 16px;
+}
+.hero-title {
+  font-size: 32px; font-weight: 600; letter-spacing: -.5px;
+  color: var(--text); margin-bottom: 10px;
+}
+.hero-sub { font-size: 15px; color: var(--muted); max-width: 600px; line-height: 1.6; }
+.hero-meta {
+  display: flex; gap: 24px; margin-top: 20px; flex-wrap: wrap;
+}
+.hero-meta-item { font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+.hero-meta-item strong { color: var(--text); }
+
+/* ── MOBILE ── */
+.mob-toggle {
+  display: none; position: fixed; bottom: 20px; right: 20px;
+  width: 44px; height: 44px; border-radius: 12px;
+  background: var(--bg2); border: 1px solid var(--border2);
+  color: var(--text); font-size: 18px; cursor: pointer;
+  z-index: 100; align-items: center; justify-content: center;
+  box-shadow: 0 4px 20px rgba(0,0,0,.4);
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+    transition: transform .25s ease;
+  }
+  .sidebar.open { transform: translateX(0); }
+  .main { margin-left: 0; padding: 24px 20px; }
+  .page-hero { padding: 32px 20px 24px; margin: -24px -20px 32px; }
+  .hero-title { font-size: 22px; }
+  .mob-toggle { display: flex; }
+  .flow { flex-wrap: wrap; gap: 8px; }
+  .flow-arrow { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <a href="../index.html" class="sidebar-logo">🌙 MasalAI <span>/ backend</span></a>
+    <div class="sidebar-version">● LIVE · onrender.com</div>
+  </div>
+  <nav class="sidebar-nav">
+
+    <div class="nav-section">
+      <div class="nav-section-title">Genel Bakış</div>
+      <a class="nav-item active" href="#overview">📋 Giriş & Mimari</a>
+      <a class="nav-item" href="#env">⚙️ Ortam Değişkenleri</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">Auth</div>
+      <a class="nav-item" href="#auth-flow">🔐 Auth Akışı</a>
+      <a class="nav-item" href="#auth-login"><span class="method-badge nb-post">POST</span>/auth/login</a>
+      <a class="nav-item" href="#auth-me"><span class="method-badge nb-get">GET</span>/auth/me</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">Profiller</div>
+      <a class="nav-item" href="#profiles-list"><span class="method-badge nb-get">GET</span>/profiles</a>
+      <a class="nav-item" href="#profiles-create"><span class="method-badge nb-post">POST</span>/profiles</a>
+      <a class="nav-item" href="#profiles-update"><span class="method-badge nb-patch">PATCH</span>/profiles/:id</a>
+      <a class="nav-item" href="#profiles-delete"><span class="method-badge nb-delete">DELETE</span>/profiles/:id</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">Masallar</div>
+      <a class="nav-item" href="#story-flow">✨ Üretim Akışı</a>
+      <a class="nav-item" href="#stories-generate"><span class="method-badge nb-post">POST</span>/stories/generate</a>
+      <a class="nav-item" href="#stories-list"><span class="method-badge nb-get">GET</span>/stories</a>
+      <a class="nav-item" href="#stories-get"><span class="method-badge nb-get">GET</span>/stories/:id</a>
+      <a class="nav-item" href="#stories-patch"><span class="method-badge nb-patch">PATCH</span>/stories/:id</a>
+      <a class="nav-item" href="#stories-delete"><span class="method-badge nb-delete">DELETE</span>/stories/:id</a>
+      <a class="nav-item" href="#stories-audio"><span class="method-badge nb-post">POST</span>/stories/:id/audio</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">İş Kuralları</div>
+      <a class="nav-item" href="#br001">📏 BR-001 Kelime Limiti</a>
+      <a class="nav-item" href="#br002">🎙️ BR-002 Ses Akışı</a>
+      <a class="nav-item" href="#br003">🔒 BR-003 Ses Kotası</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">Servisler</div>
+      <a class="nav-item" href="#svc-claude">🤖 Claude Service</a>
+      <a class="nav-item" href="#svc-openai">🎵 OpenAI TTS</a>
+      <a class="nav-item" href="#svc-s3">☁️ S3 Service</a>
+      <a class="nav-item" href="#svc-subscription">💳 Subscription</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">Veritabanı</div>
+      <a class="nav-item" href="#db-schema">🗄️ Şema</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">Middleware</div>
+      <a class="nav-item" href="#middleware">🛡️ Auth & Validate</a>
+      <a class="nav-item" href="#errors">❌ Hata Kodları</a>
+    </div>
+
+    <div class="nav-section">
+      <div class="nav-section-title">Deploy</div>
+      <a class="nav-item" href="#deploy">🚀 Render Deploy</a>
+    </div>
+
+  </nav>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- HERO -->
+  <div class="page-hero">
+    <div class="hero-badge">● LIVE · https://masalai-backend.onrender.com</div>
+    <div class="hero-title">MasalAI Backend Dokümantasyonu</div>
+    <div class="hero-sub">Node.js + Express REST API — Claude API entegrasyonu, OpenAI TTS, AWS S3 ses cache, RevenueCat webhook ve Supabase PostgreSQL.</div>
+    <div class="hero-meta">
+      <div class="hero-meta-item">🔗 Base URL: <strong>https://masalai-backend.onrender.com/api/v1</strong></div>
+      <div class="hero-meta-item">📖 Swagger: <strong><a href="https://masalai-backend.onrender.com/api/docs" target="_blank" style="color:var(--post)">api/docs</a></strong></div>
+      <div class="hero-meta-item">Auth: <strong>Bearer JWT</strong></div>
+      <div class="hero-meta-item">Runtime: <strong>Node.js + Express 4</strong></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       GENEL BAKIŞ
+  ══════════════════════════════════ -->
+  <div class="doc-section" id="overview">
+    <div class="section-eyebrow">01</div>
+    <div class="section-title">Mimari Genel Bakış</div>
+    <div class="section-desc">Request → Middleware → Controller → Service katmanı üzerinden çalışan tek yönlü akış. Tüm AI ve dış servis çağrıları service katmanında izole edilmiştir.</div>
+
+    <div style="margin-top:20px">
+      <div class="ep-label">Request Yaşam Döngüsü</div>
+      <div class="flow-wrap">
+        <div class="flow">
+          <div class="flow-step">
+            <div class="flow-box fb-blue">Client</div>
+            <div class="flow-label">iOS / Android</div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="flow-box fb-purple">Auth Middleware</div>
+            <div class="flow-label">JWT doğrulama</div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="flow-box fb-purple">Validate</div>
+            <div class="flow-label">Zod şema</div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="flow-box fb-gold">Controller</div>
+            <div class="flow-label">İş mantığı</div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="flow-box">Service</div>
+            <div class="flow-label">Dış API / DB</div>
+          </div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step">
+            <div class="flow-box fb-green">Response</div>
+            <div class="flow-label">JSON</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:20px">
+      <div class="ep-label">Klasör Yapısı</div>
+      <div class="code-block"><span class="cb-comment">// BACKEND_API_DB.zip</span>
+src/
+├── <span class="cb-key">config</span>/index.ts          <span class="cb-comment">// Tüm env değişkenleri + limitler</span>
+├── <span class="cb-key">controllers</span>/
+│   ├── auth.controller.ts
+│   ├── profile.controller.ts
+│   ├── story.controller.ts    <span class="cb-comment">// BR-001/002/003 tam uyumlu</span>
+│   └── webhook.controller.ts
+├── <span class="cb-key">routes</span>/index.ts
+├── <span class="cb-key">middleware</span>/
+│   ├── auth.ts                <span class="cb-comment">// JWT verify</span>
+│   └── validate.ts            <span class="cb-comment">// Zod middleware</span>
+├── <span class="cb-key">services</span>/
+│   ├── claude.service.ts      <span class="cb-comment">// BR-001 retry + truncation</span>
+│   ├── openai.service.ts      <span class="cb-comment">// TTS (tts-1, onyx)</span>
+│   ├── s3.service.ts          <span class="cb-comment">// Upload + presigned URL</span>
+│   └── subscription.service.ts
+├── <span class="cb-key">swagger</span>.ts
+└── <span class="cb-key">utils</span>/
+    ├── prisma.ts
+    └── story.utils.ts
+prisma/
+├── schema.prisma
+└── migrations/</div>
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <!-- ══════════════════════════════════
+       ENV
+  ══════════════════════════════════ -->
+  <div class="doc-section" id="env">
+    <div class="section-eyebrow">02</div>
+    <div class="section-title">Ortam Değişkenleri</div>
+    <div class="section-desc">Render dashboard'dan veya <code style="font-family:var(--mono);font-size:13px;color:var(--purple)">.env</code> dosyasından yönetilir. Tüm değişkenler <code style="font-family:var(--mono);font-size:13px;color:var(--purple)">src/config/index.ts</code> üzerinden import edilir.</div>
+
+    <div style="margin-top:16px;border:1px solid var(--border);border-radius:10px;overflow:hidden">
+      <table class="env-table">
+        <thead><tr><th>Değişken</th><th>Örnek Değer</th><th>Açıklama</th><th>Durum</th></tr></thead>
+        <tbody>
+          <tr><td class="env-key">DATABASE_URL</td><td class="env-val">postgresql://...@aws-0.../postgres?pgbouncer=true&port=6543</td><td class="env-desc">Supabase Transaction Pooler (runtime)</td><td><span class="env-req">zorunlu</span></td></tr>
+          <tr><td class="env-key">DIRECT_URL</td><td class="env-val">postgresql://...@aws-0.../postgres?port=5432</td><td class="env-desc">Direct connection (migration)</td><td><span class="env-req">zorunlu</span></td></tr>
+          <tr><td class="env-key">JWT_SECRET</td><td class="env-val">super-secret-key</td><td class="env-desc">JWT imzalama anahtarı</td><td><span class="env-req">zorunlu</span></td></tr>
+          <tr><td class="env-key">ANTHROPIC_API_KEY</td><td class="env-val">sk-ant-...</td><td class="env-desc">Claude API erişimi</td><td><span class="env-req">zorunlu</span></td></tr>
+          <tr><td class="env-key">OPENAI_API_KEY</td><td class="env-val">sk-...</td><td class="env-desc">OpenAI TTS erişimi</td><td><span class="env-req">zorunlu</span></td></tr>
+          <tr><td class="env-key">AWS_ACCESS_KEY_ID</td><td class="env-val">AKIA...</td><td class="env-desc">S3 erişim anahtarı</td><td><span class="env-req">zorunlu</span></td></tr>
+          <tr><td class="env-key">AWS_SECRET_ACCESS_KEY</td><td class="env-val">...</td><td class="env-desc">S3 gizli anahtar</td><td><span class="env-req">zorunlu</span></td></tr>
+          <tr><td class="env-key">AWS_REGION</td><td class="env-val">eu-central-1</td><td class="env-desc">S3 bucket bölgesi</td><td><span class="env-req">zorunlu</span></td></tr>
+          <tr><td class="env-key">AWS_S3_BUCKET</td><td class="env-val">masalai-audio</td><td class="env-desc">S3 bucket adı</td><td><span class="env-req">zorunlu</span></td></tr>
+          <tr><td class="env-key">REVENUECAT_WEBHOOK_SECRET</td><td class="env-val">rc_wh_...</td><td class="env-desc">Webhook doğrulama</td><td><span class="env-req">zorunlu</span></td></tr>
+          <tr><td class="env-key">PORT</td><td class="env-val">3000</td><td class="env-desc">Sunucu portu</td><td><span class="env-opt">opsiyonel</span></td></tr>
+          <tr><td class="env-key">NODE_ENV</td><td class="env-val">production</td><td class="env-desc">Ortam tipi</td><td><span class="env-opt">opsiyonel</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <!-- ══════════════════════════════════
+       AUTH AKIŞI
+  ══════════════════════════════════ -->
+  <div class="doc-section" id="auth-flow">
+    <div class="section-eyebrow">03</div>
+    <div class="section-title">Auth Akışı</div>
+    <div class="section-desc">Google ve Apple Sign-In token'ları backend'e gönderilir, doğrulanır ve JWT döndürülür. Tüm korumalı endpoint'ler <code style="font-family:var(--mono);font-size:13px;color:var(--purple)">Authorization: Bearer &lt;token&gt;</code> header'ı gerektirir.</div>
+
+    <div style="margin-top:20px">
+      <div class="ep-label">Google / Apple → JWT Akışı</div>
+      <div class="flow-wrap">
+        <div class="flow">
+          <div class="flow-step"><div class="flow-box fb-blue">Mobil App</div><div class="flow-label">Google/Apple SDK</div></div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step"><div class="flow-box">idToken al</div><div class="flow-label">OAuth provider</div></div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step"><div class="flow-box fb-gold">POST /auth/login</div><div class="flow-label">idToken + provider</div></div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step"><div class="flow-box fb-purple">Token Doğrula</div><div class="flow-label">google-auth-library</div></div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step"><div class="flow-box">upsert user</div><div class="flow-label">Prisma DB</div></div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step"><div class="flow-box fb-green">JWT döndür</div><div class="flow-label">7 gün TTL</div></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="info-box ib-blue" style="margin-top:16px">
+      <span class="ib-icon">ℹ️</span>
+      <span>JWT payload: <code style="font-family:var(--mono)">{ userId, email, iat, exp }</code> — 7 gün geçerlidir. Auth middleware her korumalı request'te bu token'ı doğrular ve <code style="font-family:var(--mono)">req.user</code>'a ekler.</span>
+    </div>
+  </div>
+
+  <!-- Auth Endpoints -->
+  <div id="auth-login" class="endpoint-card">
+    <div class="endpoint-header" onclick="toggleEndpoint(this)">
+      <span class="method-tag mt-post">POST</span>
+      <span class="endpoint-path">/api/v1/auth/login</span>
+      <span class="endpoint-summary">Google veya Apple ile giriş → JWT</span>
+      <span class="endpoint-chevron">▼</span>
+    </div>
+    <div class="endpoint-body">
+      <div class="ep-label">Request Body</div>
+      <table class="param-table">
+        <thead><tr><th>Alan</th><th>Tip</th><th>Zorunlu</th><th>Açıklama</th></tr></thead>
+        <tbody>
+          <tr><td class="param-name">idToken</td><td class="param-type">string</td><td class="param-req">zorunlu</td><td class="param-desc">OAuth provider'dan gelen ID token</td></tr>
+          <tr><td class="param-name">provider</td><td class="param-type">"google" | "apple"</td><td class="param-req">zorunlu</td><td class="param-desc">Auth sağlayıcı</td></tr>
+        </tbody>
+      </table>
+      <div class="ep-label" style="margin-top:14px">Response <span class="response-badge rb-200">200</span></div>
+      <div class="code-block">{
+  <span class="cb-key">"token"</span>: <span class="cb-str">"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."</span>,
+  <span class="cb-key">"user"</span>: {
+    <span class="cb-key">"id"</span>: <span class="cb-str">"uuid"</span>,
+    <span class="cb-key">"email"</span>: <span class="cb-str">"user@example.com"</span>,
+    <span class="cb-key">"createdAt"</span>: <span class="cb-str">"2024-01-01T00:00:00.000Z"</span>
+  }
+}</div>
+    </div>
+  </div>
+
+  <div id="auth-me" class="endpoint-card" style="margin-bottom:40px">
+    <div class="endpoint-header" onclick="toggleEndpoint(this)">
+      <span class="method-tag mt-get">GET</span>
+      <span class="endpoint-path">/api/v1/auth/me</span>
+      <span class="endpoint-summary">Mevcut kullanıcı bilgisi</span>
+      <span class="endpoint-chevron">▼</span>
+    </div>
+    <div class="endpoint-body">
+      <div class="info-box ib-blue"><span class="ib-icon">🔐</span><span>Bu endpoint korumalıdır. <code style="font-family:var(--mono)">Authorization: Bearer &lt;token&gt;</code> header'ı gerektirir.</span></div>
+      <div class="ep-label">Response <span class="response-badge rb-200">200</span></div>
+      <div class="code-block">{
+  <span class="cb-key">"id"</span>: <span class="cb-str">"uuid"</span>,
+  <span class="cb-key">"email"</span>: <span class="cb-str">"user@example.com"</span>,
+  <span class="cb-key">"subscription"</span>: {
+    <span class="cb-key">"tier"</span>: <span class="cb-str">"premium_monthly"</span>,
+    <span class="cb-key">"credits"</span>: <span class="cb-num">0</span>,
+    <span class="cb-key">"storiesThisMonth"</span>: <span class="cb-num">3</span>
+  }
+}</div>
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <!-- ══════════════════════════════════
+       PROFİLLER
+  ══════════════════════════════════ -->
+  <div class="doc-section" id="profiles-list">
+    <div class="section-eyebrow">04</div>
+    <div class="section-title">Çocuk Profilleri</div>
+    <div class="section-desc">Her kullanıcı birden fazla çocuk profili oluşturabilir. Masallar profil bazlı saklanır. Tüm endpoint'ler JWT auth gerektirir.</div>
+  </div>
+
+  <div class="endpoint-card">
+    <div class="endpoint-header" onclick="toggleEndpoint(this)">
+      <span class="method-tag mt-get">GET</span>
+      <span class="endpoint-path">/api/v1/profiles</span>
+      <span class="endpoint-summary">Kullanıcının tüm profilleri</span>
+      <span class="endpoint-chevron">▼</span>
+    </div>
+    <div class="endpoint-body">
+      <div class="ep-label">Response <span class="response-badge rb-200">200</span></div>
+      <div class="code-block">[{
+  <span class="cb-key">"id"</span>: <span class="cb-str">"uuid"</span>,
+  <span class="cb-key">"name"</span>: <span class="cb-str">"Ela"</span>,
+  <span class="cb-key">"age"</span>: <span class="cb-num">5</span>,
+  <span class="cb-key">"ageGroup"</span>: <span class="cb-str">"5-6"</span>,  <span class="cb-comment">// "2-4" | "5-6" | "7-8"</span>
+  <span class="cb-key">"avatar"</span>: <span class="cb-str">"🦋"</span>,
+  <span class="cb-key">"storyCount"</span>: <span class="cb-num">12</span>
+}]</div>
+    </div>
+  </div>
+
+  <div id="profiles-create" class="endpoint-card">
+    <div class="endpoint-header" onclick="toggleEndpoint(this)">
+      <span class="method-tag mt-post">POST</span>
+      <span class="endpoint-path">/api/v1/profiles</span>
+      <span class="endpoint-summary">Yeni çocuk profili oluştur</span>
+      <span class="endpoint-chevron">▼</span>
+    </div>
+    <div class="endpoint-body">
+      <div class="ep-label">Request Body</div>
+      <table class="param-table">
+        <thead><tr><th>Alan</th><th>Tip</th><th>Zorunlu</th><th>Açıklama</th></tr></thead>
+        <tbody>
+          <tr><td class="param-name">name</td><td class="param-type">string</td><td class="param-req">zorunlu</td><td class="param-desc">Çocuğun adı</td></tr>
+          <tr><td class="param-name">age</td><td class="param-type">number (2–8)</td><td class="param-req">zorunlu</td><td class="param-desc">Çocuğun yaşı — ageGroup otomatik hesaplanır</td></tr>
+          <tr><td class="param-name">avatar</td><td class="param-type">string</td><td class="param-opt">opsiyonel</td><td class="param-desc">Emoji avatar</td></tr>
+        </tbody>
+      </table>
+      <div class="ep-label" style="margin-top:14px">Response <span class="response-badge rb-201">201</span></div>
+      <div class="code-block">{ <span class="cb-key">"id"</span>: <span class="cb-str">"uuid"</span>, <span class="cb-key">"name"</span>: <span class="cb-str">"Ela"</span>, <span class="cb-key">"age"</span>: <span class="cb-num">5</span>, <span class="cb-key">"ageGroup"</span>: <span class="cb-str">"5-6"</span>, <span class="cb-key">"avatar"</span>: <span class="cb-str">"🦋"</span> }</div>
+    </div>
+  </div>
+
+  <div id="profiles-update" class="endpoint-card">
+    <div class="endpoint-header" onclick="toggleEndpoint(this)">
+      <span class="method-tag mt-patch">PATCH</span>
+      <span class="endpoint-path">/api/v1/profiles/<span class="path-param">:id</span></span>
+      <span class="endpoint-summary">Profil güncelle</span>
+      <span class="endpoint-chevron">▼</span>
+    </div>
+    <div class="endpoint-body">
+      <div class="ep-label">Path Parametresi</div>
+      <table class="param-table">
+        <thead><tr><th>Alan</th><th>Tip</th><th>Açıklama</th></tr></thead>
+        <tbody><tr><td class="param-name">id</td><td class="param-type">UUID</td><td class="param-desc">Profil ID'si</td></tr></tbody>
+      </table>
+      <div class="ep-label" style="margin-top:12px">Request Body — tüm alanlar opsiyonel</div>
+      <div class="code-block">{ <span class="cb-key">"name"</span>?: <span class="cb-str">string</span>, <span class="cb-key">"age"</span>?: <span class="cb-num">number</span>, <span class="cb-key">"avatar"</span>?: <span class="cb-str">string</span> }</div>
+    </div>
+  </div>
+
+  <div id="profiles-delete" class="endpoint-card" style="margin-bottom:40px">
+    <div class="endpoint-header" onclick="toggleEndpoint(this)">
+      <span class="method-tag mt-delete">DELETE</span>
+      <span class="endpoint-path">/api/v1/profiles/<span class="path-param">:id</span></span>
+      <span class="endpoint-summary">Profil sil (cascade: stories)</span>
+      <span class="endpoint-chevron">▼</span>
+    </div>
+    <div class="endpoint-body">
+      <div class="info-box ib-red"><span class="ib-icon">⚠️</span><span>Profil silindiğinde ilişkili tüm masallar ve S3 ses dosyaları da silinir (cascade delete).</span></div>
+      <div class="ep-label">Response <span class="response-badge rb-200">200</span></div>
+      <div class="code-block">{ <span class="cb-key">"message"</span>: <span class="cb-str">"Profile deleted"</span> }</div>
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <!-- ══════════════════════════════════
+       MASAL ÜRETİM AKIŞI
+  ══════════════════════════════════ -->
+  <div class="doc-section" id="story-flow">
+    <div class="section-eyebrow">05</div>
+    <div class="section-title">Masal Üretim Akışı</div>
+    <div class="section-desc">POST /stories/generate çağrısından DB'ye yazılana kadar tüm adımlar. BR-001, BR-002 ve BR-003 bu akışın içine gömülüdür.</div>
+
+    <div style="margin-top:20px">
+      <div class="ep-label">Tam Akış</div>
+      <div class="flow-wrap">
+        <div class="flow">
+          <div class="flow-step"><div class="flow-box fb-blue">Client isteği</div><div class="flow-label">POST /stories/generate</div></div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step"><div class="flow-box fb-purple">Auth + Validate</div><div class="flow-label">JWT + Zod</div></div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step"><div class="flow-box fb-gold">Kota Kontrol</div><div class="flow-label">subscription check</div></div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step"><div class="flow-box">Claude API</div><div class="flow-label">claude.service.ts</div></div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step"><div class="flow-box fb-gold">BR-001 Kontrol</div><div class="flow-label">word_count ≤ 1300</div></div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step"><div class="flow-box">DB'ye Yaz</div><div class="flow-label">Prisma upsert</div></div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step"><div class="flow-box fb-green">Metin Döndür</div><div class="flow-label">BR-002 gereği ses YOK</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="stories-generate" class="endpoint-card">
+    <div class="endpoint-header" onclick="toggleEndpoint(this)">
+      <span class="method-tag mt-post">POST</span>
+      <span class="endpoint-path">/api/v1/stories/generate</span>
+      <span class="endpoint-summary">Claude API ile masal üret (BR-001)</span>
+      <span class="endpoint-chevron">▼</span>
+    </div>
+    <div class="endpoint-body">
+      <div class="ep-label">Request Body</div>
+      <table class="param-table">
+        <thead><tr><th>Alan</th><th>Tip</th><th>Zorunlu</th><th>Açıklama</th></tr></thead>
+        <tbody>
+          <tr><td class="param-name">childProfileId</td><td class="param-type">UUID</td><td class="param-req">zorunlu</td><td class="param-desc">Hangi profil için</td></tr>
+          <tr><td class="param-name">mainCharacter</td><td class="param-type">string</td><td class="param-req">zorunlu</td><td class="param-desc">Ana karakter adı</td></tr>
+          <tr><td class="param-name">sideCharacter</td><td class="param-type">string</td><td class="param-opt">opsiyonel</td><td class="param-desc">Yardımcı karakter</td></tr>
+          <tr><td class="param-name">location</td><td class="param-type">string</td><td class="param-req">zorunlu</td><td class="param-desc">Mekan (büyülü orman, uzay...)</td></tr>
+          <tr><td class="param-name">category</td><td class="param-type">string</td><td class="param-req">zorunlu</td><td class="param-desc">Konu (macera, arkadaşlık...)</td></tr>
+          <tr><td class="param-name">mainMessage</td><td class="param-type">string</td><td class="param-opt">opsiyonel</td><td class="param-desc">Ana mesaj / ders</td></tr>
+        </tbody>
+      </table>
+
+      <div class="ep-label" style="margin-top:14px">Response <span class="response-badge rb-201">201</span></div>
+      <div class="code-block">{
+  <span class="cb-key">"id"</span>: <span class="cb-str">"uuid"</span>,
+  <span class="cb-key">"title"</span>: <span class="cb-str">"Ormanın Sırrı"</span>,
+  <span class="cb-key">"content"</span>: <span class="cb-str">"Bir varmış bir yokmuş..."</span>,
+  <span class="cb-key">"wordCount"</span>: <span class="cb-num">847</span>,
+  <span class="cb-key">"estimatedAudioMinutes"</span>: <span class="cb-num">6.5</span>,
+  <span class="cb-key">"lesson"</span>: <span class="cb-str">"Arkadaşlık en büyük hazinedir."</span>,
+  <span class="cb-key">"wasTruncated"</span>: <span class="cb-bool">false</span>,
+  <span class="cb-key">"hasAudio"</span>: <span class="cb-bool">false</span>,  <span class="cb-comment">// BR-002: ses henüz üretilmedi</span>
+  <span class="cb-key">"createdAt"</span>: <span class="cb-str">"2024-01-01T00:00:00.000Z"</span>
+}</div>
+
+      <div class="info-box ib-gold" style="margin-top:12px">
+        <span class="ib-icon">⚡</span>
+        <span><strong>BR-001:</strong> word_count &gt; 1300 ise önce retry isteği atılır. Hâlâ aşılırsa 1300. kelimede truncation yapılır, <code style="font-family:var(--mono)">wasTruncated: true</code> döner.</span>
+      </div>
+    </div>
+  </div>
+
+  <div id="stories-list" class="endpoint-card">
+    <div class="endpoint-header" onclick="toggleEndpoint(this)">
+      <span class="method-tag mt-get">GET</span>
+      <span class="endpoint-path">/api/v1/stories</span>
+      <span class="endpoint-summary">Kullanıcının tüm masalları</span>
+      <span class="endpoint-chevron">▼</span>
+    </div>
+    <div class="endpoint-body">
+      <div class="ep-label">Query Parametreleri</div>
+      <table class="param-table">
+        <thead><tr><th>Alan</th><th>Tip</th><th>Açıklama</th></tr></thead>
+        <tbody>
+          <tr><td class="param-name">profileId</td><td class="param-type">UUID</td><td class="param-desc">Profile göre filtrele (opsiyonel)</td></tr>
+          <tr><td class="param-name">isFavorite</td><td class="param-type">boolean</td><td class="param-desc">Sadece favoriler (opsiyonel)</td></tr>
+          <tr><td class="param-name">page</td><td class="param-type">number</td><td class="param-desc">Sayfa numarası, default: 1</td></tr>
+          <tr><td class="param-name">limit</td><td class="param-type">number</td><td class="param-desc">Sayfa başına kayıt, default: 20</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="stories-get" class="endpoint-card">
+    <div class="endpoint-header" onclick="toggleEndpoint(this)">
+      <span class="method-tag mt-get">GET</span>
+      <span class="endpoint-path">/api/v1/stories/<span class="path-param">:id</span></span>
+      <span class="endpoint-summary">Tek masal — audioUrl on-the-fly (BR-002)</span>
+      <span class="endpoint-chevron">▼</span>
+    </div>
+    <div class="endpoint-body">
+      <div class="info-box ib-green">
+        <span class="ib-icon">🔗</span>
+        <span><strong>BR-002:</strong> <code style="font-family:var(--mono)">audioUrl</code> veritabanında saklanmaz. <code style="font-family:var(--mono)">audioS3Key</code> varsa bu endpoint her çağrıda S3 presigned URL üretir (1 saat TTL).</span>
+      </div>
+      <div class="ep-label" style="margin-top:12px">Response <span class="response-badge rb-200">200</span></div>
+      <div class="code-block">{
+  <span class="cb-key">"id"</span>: <span class="cb-str">"uuid"</span>,
+  <span class="cb-key">"title"</span>: <span class="cb-str">"Ormanın Sırrı"</span>,
+  <span class="cb-key">"content"</span>: <span class="cb-str">"..."</span>,
+  <span class="cb-key">"hasAudio"</span>: <span class="cb-bool">true</span>,
+  <span class="cb-key">"audioUrl"</span>: <span class="cb-str">"https://s3.amazonaws.com/...?X-Amz-Expires=3600"</span>,  <span class="cb-comment">// on-the-fly, 1h TTL</span>
+  <span class="cb-key">"isFavorite"</span>: <span class="cb-bool">false</span>
+}</div>
+    </div>
+  </div>
+
+  <div id="stories-patch" class="endpoint-card">
+    <div class="endpoint-header" onclick="toggleEndpoint(this)">
+      <span class="method-tag mt-patch">PATCH</span>
+      <span class="endpoint-path">/api/v1/stories/<span class="path-param">:id</span></span>
+      <span class="endpoint-summary">Sadece isFavorite güncellenebilir</span>
+      <span class="endpoint-chevron">▼</span>
+    </div>
+    <div class="endpoint-body">
+      <div class="ep-label">Request Body</div>
+      <div class="code-block">{ <span class="cb-key">"isFavorite"</span>: <span class="cb-bool">true</span> }</div>
+    </div>
+  </div>
+
+  <div id="stories-delete" class="endpoint-card">
+    <div class="endpoint-header" onclick="toggleEndpoint(this)">
+      <span class="method-tag mt-delete">DELETE</span>
+      <span class="endpoint-path">/api/v1/stories/<span class="path-param">:id</span></span>
+      <span class="endpoint-summary">Masal + S3 ses dosyasını sil</span>
+      <span class="endpoint-chevron">▼</span>
+    </div>
+    <div class="endpoint-body">
+      <div class="info-box ib-red"><span class="ib-icon">⚠️</span><span>DB kaydı silinmeden önce S3'teki ses dosyası da silinir. S3 hatası DB silmeyi engellemez (best effort).</span></div>
+    </div>
+  </div>
+
+  <div id="stories-audio" class="endpoint-card" style="margin-bottom:40px">
+    <div class="endpoint-header" onclick="toggleEndpoint(this)">
+      <span class="method-tag mt-post">POST</span>
+      <span class="endpoint-path">/api/v1/stories/<span class="path-param">:id</span>/audio</span>
+      <span class="endpoint-summary">TTS üret — BR-002 + BR-003</span>
+      <span class="endpoint-chevron">▼</span>
+    </div>
+    <div class="endpoint-body">
+      <div class="ep-label">Ses Üretim Akışı</div>
+      <div class="flow-wrap">
+        <div class="flow">
+          <div class="flow-step"><div class="flow-box fb-blue">POST /audio</div><div class="flow-label">kullanıcı butona bastı</div></div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step"><div class="flow-box fb-gold">BR-003 Kota</div><div class="flow-label">plan kontrolü</div></div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step"><div class="flow-box">S3 Cache?</div><div class="flow-label">audioS3Key var mı</div></div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step"><div class="flow-box">OpenAI TTS</div><div class="flow-label">tts-1, onyx (sadece yeniyse)</div></div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step"><div class="flow-box">S3 Upload</div><div class="flow-label">kalıcı cache</div></div>
+          <div class="flow-arrow">→</div>
+          <div class="flow-step"><div class="flow-box fb-green">audioUrl döndür</div><div class="flow-label">presigned, 1h TTL</div></div>
+        </div>
+      </div>
+
+      <div class="info-box ib-blue" style="margin-top:12px">
+        <span class="ib-icon">💡</span>
+        <span><strong>S3 Cache:</strong> Daha önce üretilmiş ses varsa (<code style="font-family:var(--mono)">audioS3Key</code> dolu) OpenAI TTS'e istek atılmaz, doğrudan presigned URL döner. Cache'den dinleme BR-003 kotasını tüketmez.</span>
+      </div>
+
+      <div class="ep-label" style="margin-top:14px">Response <span class="response-badge rb-200">200</span></div>
+      <div class="code-block">{
+  <span class="cb-key">"audioUrl"</span>: <span class="cb-str">"https://s3.amazonaws.com/masalai-audio/stories/uuid.mp3?..."</span>,
+  <span class="cb-key">"fromCache"</span>: <span class="cb-bool">false</span>,
+  <span class="cb-key">"remainingQuota"</span>: <span class="cb-num">17</span>  <span class="cb-comment">// yıllık plan için</span>
+}</div>
+
+      <div class="ep-label" style="margin-top:14px">Hata Yanıtları</div>
+      <div class="code-block"><span class="cb-comment">// BR-003: Kota doldu</span>
+{ <span class="cb-key">"error"</span>: <span class="cb-str">"AUDIO_LIMIT_REACHED"</span>, <span class="cb-key">"message"</span>: <span class="cb-str">"Aylık 20 sesli masal limitine ulaştınız."</span> }
+
+<span class="cb-comment">// Ücretsiz plan</span>
+{ <span class="cb-key">"error"</span>: <span class="cb-str">"AUDIO_NOT_AVAILABLE"</span>, <span class="cb-key">"message"</span>: <span class="cb-str">"Sesli anlatım Premium plana özeldir."</span> }</div>
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <!-- ══════════════════════════════════
+       İŞ KURALLARI
+  ══════════════════════════════════ -->
+  <div class="doc-section" id="br001">
+    <div class="section-eyebrow">06</div>
+    <div class="section-title">İş Kuralları — Kod Akışı</div>
+
+    <div class="br-card">
+      <div class="br-header">
+        <div class="br-id">BR-001</div>
+        <div class="br-title">Masal Kelime Limiti — Maks. 1.300 kelime</div>
+      </div>
+      <div class="br-body">
+        <div class="ep-label">Uygulama Katmanları</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
+          <span class="tag tag-purple">1. Prompt talimatı</span>
+          <span class="tag tag-blue">2. Backend retry mantığı</span>
+          <span class="tag tag-gold">3. DB CHECK constraint</span>
+        </div>
+        <div class="code-block"><span class="cb-comment">// claude.service.ts — BR-001 retry mantığı</span>
+<span class="cb-key">const</span> result = <span class="cb-key">await</span> generateStory(params);
+
+<span class="cb-key">if</span> (result.word_count > <span class="cb-num">1300</span>) {
+  <span class="cb-comment">// 1. deneme: kısaltma isteği gönder</span>
+  <span class="cb-key">const</span> retry = <span class="cb-key">await</span> retryWithShorter(params, result);
+
+  <span class="cb-key">if</span> (retry.word_count > <span class="cb-num">1300</span>) {
+    <span class="cb-comment">// 2. deneme: 1300. kelimede kır</span>
+    retry.content = truncateAt(retry.content, <span class="cb-num">1300</span>);
+    retry.wasTruncated = <span class="cb-bool">true</span>;
+  }
+}
+
+<span class="cb-comment">// DB'de CHECK constraint: word_count &lt;= 1300</span>
+<span class="cb-comment">// CONSTRAINT stories_word_count_check CHECK (word_count &lt;= 1300)</span></div>
+        <div class="ep-label" style="margin-top:14px">Yaş Bazlı Hedefler</div>
+        <table class="param-table">
+          <thead><tr><th>Yaş Grubu</th><th>Hedef Kelime</th><th>Cümle Uzunluğu</th><th>Özellik</th></tr></thead>
+          <tbody>
+            <tr><td class="param-name">2–4 yaş</td><td>400–600</td><td>5–8 kelime</td><td class="param-desc">Ritim, tekrar, onomatopeia</td></tr>
+            <tr><td class="param-name">5–6 yaş</td><td>700–900</td><td>8–12 kelime</td><td class="param-desc">Diyalog, merak, duygu</td></tr>
+            <tr><td class="param-name">7–8 yaş</td><td>900–1200</td><td>10–15 kelime</td><td class="param-desc">Karakter derinliği, mizah</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="br-card" id="br002">
+      <div class="br-header">
+        <div class="br-id">BR-002</div>
+        <div class="br-title">Ses Üretim Akışı — Metin önce, ses isteğe bağlı</div>
+      </div>
+      <div class="br-body">
+        <div class="code-block"><span class="cb-comment">// story.controller.ts — BR-002 zorunluluğu</span>
+
+<span class="cb-comment">// ✅ DOĞRU: generate endpoint sadece metin döndürür</span>
+<span class="cb-key">return</span> res.json({ title, content, wordCount, <span class="cb-key">hasAudio</span>: <span class="cb-bool">false</span> });
+
+<span class="cb-comment">// ❌ YANLIŞ: Bu çağrı generate içinde ASLA yapılmaz</span>
+<span class="cb-comment">// await openaiService.generateAudio(content);</span>
+
+<span class="cb-comment">// ✅ Ses sadece /audio endpoint'i ile tetiklenir</span>
+<span class="cb-comment">// POST /stories/:id/audio → requestAudio()</span></div>
+        <div class="info-box ib-gold" style="margin-top:12px">
+          <span class="ib-icon">📌</span>
+          <span><code style="font-family:var(--mono)">audioUrl</code> veritabanında <strong>hiçbir zaman saklanmaz</strong>. Sadece <code style="font-family:var(--mono)">audioS3Key</code> saklanır. URL her istekte <code style="font-family:var(--mono)">s3.getSignedUrl()</code> ile on-the-fly üretilir (1 saat TTL).</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="br-card" id="br003">
+      <div class="br-header">
+        <div class="br-id">BR-003</div>
+        <div class="br-title">Plan Bazlı Sesli Anlatım Kotası</div>
+      </div>
+      <div class="br-body">
+        <table class="param-table">
+          <thead><tr><th>Plan</th><th>Sesli Hak</th><th>Sayaç</th><th>Sıfırlama</th></tr></thead>
+          <tbody>
+            <tr><td class="param-name">free</td><td><span class="tag tag-red">0</span></td><td>—</td><td>—</td></tr>
+            <tr><td class="param-name">premium_monthly</td><td><span class="tag tag-green">Sınırsız</span></td><td>Yok</td><td>—</td></tr>
+            <tr><td class="param-name">premium_yearly</td><td><span class="tag tag-gold">20/ay</span></td><td>storiesThisMonth</td><td>monthResetAt ile</td></tr>
+            <tr><td class="param-name">credits</td><td><span class="tag tag-blue">Masalda dahil</span></td><td>credits azalır</td><td>—</td></tr>
+          </tbody>
+        </table>
+        <div class="code-block" style="margin-top:14px"><span class="cb-comment">// subscription.service.ts — BR-003 kota kontrolü</span>
+<span class="cb-key">async function</span> checkAudioQuota(userId: string) {
+  <span class="cb-key">const</span> sub = <span class="cb-key">await</span> prisma.subscription.findUnique({ where: { userId } });
+
+  <span class="cb-key">if</span> (sub.tier === <span class="cb-str">'free'</span>) <span class="cb-key">throw</span> <span class="cb-str">'AUDIO_NOT_AVAILABLE'</span>;
+
+  <span class="cb-key">if</span> (sub.tier === <span class="cb-str">'premium_yearly'</span>) {
+    <span class="cb-comment">// Ay başı sıfırlama kontrolü</span>
+    <span class="cb-key">if</span> (isBefore(sub.monthResetAt, <span class="cb-key">new</span> Date())) {
+      <span class="cb-key">await</span> resetMonthlyCount(userId);
+    }
+    <span class="cb-key">if</span> (sub.storiesThisMonth >= <span class="cb-num">20</span>) <span class="cb-key">throw</span> <span class="cb-str">'AUDIO_LIMIT_REACHED'</span>;
+  }
+
+  <span class="cb-key">if</span> (sub.tier === <span class="cb-str">'credits'</span> && sub.credits < <span class="cb-num">1</span>) <span class="cb-key">throw</span> <span class="cb-str">'INSUFFICIENT_CREDITS'</span>;
+}</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <!-- ══════════════════════════════════
+       SERVİSLER
+  ══════════════════════════════════ -->
+  <div class="doc-section" id="svc-claude">
+    <div class="section-eyebrow">07</div>
+    <div class="section-title">Servis Katmanı</div>
+
+    <div class="br-card">
+      <div class="br-header">
+        <div class="br-id" style="color:var(--purple);background:var(--purple-bg);border-color:rgba(188,140,255,.3)">Claude</div>
+        <div class="br-title">claude.service.ts — Masal Üretimi</div>
+      </div>
+      <div class="br-body">
+        <div class="ep-label">Model & Konfigürasyon</div>
+        <div class="code-block"><span class="cb-key">model</span>: <span class="cb-str">"claude-sonnet-4-20250514"</span>
+<span class="cb-key">max_tokens</span>: <span class="cb-num">2048</span>
+<span class="cb-key">system</span>: yaş grubuna özel prompt (prompts.ts'den)
+<span class="cb-key">output</span>: JSON <span class="cb-comment">→ { title, content, word_count, lesson, age_appropriate }</span></div>
+
+        <div class="ep-label" style="margin-top:14px">Prompt Yapısı</div>
+        <div class="code-block"><span class="cb-comment">// Yalnızca JSON döndür — başka hiçbir şey yazma</span>
+{
+  <span class="cb-key">"title"</span>: <span class="cb-str">"string"</span>,
+  <span class="cb-key">"content"</span>: <span class="cb-str">"string"</span>,           <span class="cb-comment">// Türkçe masal metni</span>
+  <span class="cb-key">"word_count"</span>: <span class="cb-num">number</span>,
+  <span class="cb-key">"lesson"</span>: <span class="cb-str">"string"</span>,            <span class="cb-comment">// Masalın dersi</span>
+  <span class="cb-key">"age_appropriate"</span>: <span class="cb-bool">boolean</span>   <span class="cb-comment">// İçerik güvenlik onayı</span>
+}</div>
+      </div>
+    </div>
+
+    <div class="br-card" id="svc-openai">
+      <div class="br-header">
+        <div class="br-id" style="color:var(--get);background:var(--get-bg);border-color:var(--get-bd)">OpenAI</div>
+        <div class="br-title">openai.service.ts — TTS Ses Üretimi</div>
+      </div>
+      <div class="br-body">
+        <div class="code-block"><span class="cb-comment">// openai.service.ts</span>
+<span class="cb-key">const</span> audio = <span class="cb-key">await</span> openai.audio.speech.create({
+  model: <span class="cb-str">"tts-1"</span>,
+  voice: <span class="cb-str">"onyx"</span>,    <span class="cb-comment">// Türkçe için en doğal ses</span>
+  input: storyContent,
+  response_format: <span class="cb-str">"mp3"</span>
+});
+
+<span class="cb-comment">// Maliyet: $15 / 1M karakter → ortalama masal ~$0.081</span>
+<span class="cb-comment">// ElevenLabs tamamen kaldırıldı (v2.0)</span></div>
+      </div>
+    </div>
+
+    <div class="br-card" id="svc-s3">
+      <div class="br-header">
+        <div class="br-id" style="color:var(--gold);background:rgba(245,166,35,.1);border-color:rgba(245,166,35,.3)">S3</div>
+        <div class="br-title">s3.service.ts — Ses Cache</div>
+      </div>
+      <div class="br-body">
+        <div class="code-block"><span class="cb-comment">// Key formatı: stories/{storyId}.mp3</span>
+<span class="cb-key">await</span> s3.upload({ Bucket, Key: <span class="cb-str">`stories/${storyId}.mp3`</span>, Body: audioBuffer });
+
+<span class="cb-comment">// Presigned URL — 1 saat TTL (BR-002)</span>
+<span class="cb-key">const</span> url = s3.getSignedUrl(<span class="cb-str">'getObject'</span>, { Bucket, Key, Expires: <span class="cb-num">3600</span> });
+
+<span class="cb-comment">// audioUrl DB'ye YAZILMAZ — sadece audioS3Key saklanır</span></div>
+      </div>
+    </div>
+
+    <div class="br-card" id="svc-subscription">
+      <div class="br-header">
+        <div class="br-id" style="color:var(--post);background:var(--post-bg);border-color:var(--post-bd)">RevCat</div>
+        <div class="br-title">subscription.service.ts — Abonelik Yönetimi</div>
+      </div>
+      <div class="br-body">
+        <div class="ep-label">RevenueCat Webhook Akışı</div>
+        <div class="flow-wrap" style="margin-top:8px">
+          <div class="flow">
+            <div class="flow-step"><div class="flow-box fb-blue">App Store<br>Google Play</div></div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step"><div class="flow-box">RevenueCat</div></div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step"><div class="flow-box fb-gold">POST /webhooks/revenuecat</div></div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step"><div class="flow-box fb-purple">HMAC Doğrula</div></div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step"><div class="flow-box">subscriptions güncelle</div></div>
+            <div class="flow-arrow">→</div>
+            <div class="flow-step"><div class="flow-box fb-green">tier / credits sync</div></div>
+          </div>
+        </div>
+        <div class="ep-label" style="margin-top:14px">Desteklenen Event'ler</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <span class="tag tag-green">INITIAL_PURCHASE</span>
+          <span class="tag tag-blue">RENEWAL</span>
+          <span class="tag tag-gold">PRODUCT_CHANGE</span>
+          <span class="tag tag-red">CANCELLATION</span>
+          <span class="tag tag-red">EXPIRATION</span>
+          <span class="tag">NON_RENEWING_PURCHASE</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <!-- ══════════════════════════════════
+       VERİTABANI ŞEMASI
+  ══════════════════════════════════ -->
+  <div class="doc-section" id="db-schema">
+    <div class="section-eyebrow">08</div>
+    <div class="section-title">Veritabanı Şeması</div>
+    <div class="section-desc">Supabase PostgreSQL (Frankfurt). Prisma ORM. RLS aktif — anon key ile direkt erişim kapalı.</div>
+
+    <div style="margin-top:20px">
+      <!-- users -->
+      <div style="font-size:13px;font-weight:600;color:var(--purple);font-family:var(--mono);margin-bottom:6px">📋 users</div>
+      <div style="border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:16px">
+        <table class="schema-table">
+          <thead><tr><th>Kolon</th><th>Tip</th><th>Kısıt</th><th>Açıklama</th></tr></thead>
+          <tbody>
+            <tr><td class="col-name">id</td><td class="col-type">UUID</td><td class="col-const">PK, default uuid()</td><td class="col-note">Birincil anahtar</td></tr>
+            <tr><td class="col-name">email</td><td class="col-type">VARCHAR</td><td class="col-const">UNIQUE, NOT NULL</td><td class="col-note">Kullanıcı e-postası</td></tr>
+            <tr><td class="col-name">google_id</td><td class="col-type">VARCHAR</td><td class="col-const">UNIQUE, nullable</td><td class="col-note">Google OAuth ID</td></tr>
+            <tr><td class="col-name">apple_id</td><td class="col-type">VARCHAR</td><td class="col-const">UNIQUE, nullable</td><td class="col-note">Apple Sign-In ID</td></tr>
+            <tr><td class="col-name">created_at</td><td class="col-type">TIMESTAMP</td><td class="col-const">default now()</td><td class="col-note"></td></tr>
+            <tr><td class="col-name">updated_at</td><td class="col-type">TIMESTAMP</td><td class="col-const">auto-update</td><td class="col-note"></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- child_profiles -->
+      <div style="font-size:13px;font-weight:600;color:var(--purple);font-family:var(--mono);margin-bottom:6px">👤 child_profiles</div>
+      <div style="border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:16px">
+        <table class="schema-table">
+          <thead><tr><th>Kolon</th><th>Tip</th><th>Kısıt</th><th>Açıklama</th></tr></thead>
+          <tbody>
+            <tr><td class="col-name">id</td><td class="col-type">UUID</td><td class="col-const">PK</td><td class="col-note"></td></tr>
+            <tr><td class="col-name">user_id</td><td class="col-type">UUID</td><td class="col-fk">FK → users.id CASCADE</td><td class="col-note"></td></tr>
+            <tr><td class="col-name">name</td><td class="col-type">VARCHAR</td><td class="col-const">NOT NULL</td><td class="col-note">Çocuğun adı</td></tr>
+            <tr><td class="col-name">age</td><td class="col-type">INTEGER</td><td class="col-const">CHECK (2–8)</td><td class="col-note">Çocuğun yaşı</td></tr>
+            <tr><td class="col-name">age_group</td><td class="col-type">VARCHAR</td><td class="col-const">"2-4"|"5-6"|"7-8"</td><td class="col-note">Age'den hesaplanır</td></tr>
+            <tr><td class="col-name">avatar</td><td class="col-type">VARCHAR</td><td class="col-const">nullable</td><td class="col-note">Emoji avatar</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- stories -->
+      <div style="font-size:13px;font-weight:600;color:var(--purple);font-family:var(--mono);margin-bottom:6px">📖 stories</div>
+      <div style="border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-bottom:16px">
+        <table class="schema-table">
+          <thead><tr><th>Kolon</th><th>Tip</th><th>Kısıt</th><th>Açıklama</th></tr></thead>
+          <tbody>
+            <tr><td class="col-name">id</td><td class="col-type">UUID</td><td class="col-const">PK</td><td class="col-note"></td></tr>
+            <tr><td class="col-name">child_profile_id</td><td class="col-type">UUID</td><td class="col-fk">FK → child_profiles CASCADE</td><td class="col-note"></td></tr>
+            <tr><td class="col-name">title</td><td class="col-type">VARCHAR</td><td class="col-const">NOT NULL</td><td class="col-note">Masal başlığı</td></tr>
+            <tr><td class="col-name">content</td><td class="col-type">TEXT</td><td class="col-const">NOT NULL</td><td class="col-note">Masal metni</td></tr>
+            <tr><td class="col-name">word_count</td><td class="col-type">INTEGER</td><td class="col-const">CHECK (≤ 1300) ← BR-001</td><td class="col-note">Kelime sayısı</td></tr>
+            <tr><td class="col-name">estimated_audio_minutes</td><td class="col-type">DECIMAL</td><td class="col-const">nullable</td><td class="col-note">word_count / 130</td></tr>
+            <tr><td class="col-name">lesson</td><td class="col-type">TEXT</td><td class="col-const">nullable</td><td class="col-note">Masalın dersi</td></tr>
+            <tr><td class="col-name">was_truncated</td><td class="col-type">BOOLEAN</td><td class="col-const">default false</td><td class="col-note">BR-001 truncation</td></tr>
+            <tr><td class="col-name">is_favorite</td><td class="col-type">BOOLEAN</td><td class="col-const">default false</td><td class="col-note"></td></tr>
+            <tr><td class="col-name">has_audio</td><td class="col-type">BOOLEAN</td><td class="col-const">default false</td><td class="col-note">Ses üretildi mi</td></tr>
+            <tr><td class="col-name">audio_s3_key</td><td class="col-type">VARCHAR</td><td class="col-const">nullable ← BR-002</td><td class="col-note">audioUrl SAKLANMAZ</td></tr>
+            <tr><td class="col-name">main_character</td><td class="col-type">VARCHAR</td><td class="col-const">NOT NULL</td><td class="col-note"></td></tr>
+            <tr><td class="col-name">location</td><td class="col-type">VARCHAR</td><td class="col-const">NOT NULL</td><td class="col-note"></td></tr>
+            <tr><td class="col-name">category</td><td class="col-type">VARCHAR</td><td class="col-const">NOT NULL</td><td class="col-note"></td></tr>
+            <tr><td class="col-name">created_at</td><td class="col-type">TIMESTAMP</td><td class="col-const">default now()</td><td class="col-note"></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- subscriptions -->
+      <div style="font-size:13px;font-weight:600;color:var(--purple);font-family:var(--mono);margin-bottom:6px">💳 subscriptions</div>
+      <div style="border:1px solid var(--border);border-radius:8px;overflow:hidden">
+        <table class="schema-table">
+          <thead><tr><th>Kolon</th><th>Tip</th><th>Kısıt</th><th>Açıklama</th></tr></thead>
+          <tbody>
+            <tr><td class="col-name">id</td><td class="col-type">UUID</td><td class="col-const">PK</td><td class="col-note"></td></tr>
+            <tr><td class="col-name">user_id</td><td class="col-type">UUID</td><td class="col-fk">FK → users.id UNIQUE</td><td class="col-note">1:1 ilişki</td></tr>
+            <tr><td class="col-name">tier</td><td class="col-type">ENUM</td><td class="col-const">"free"|"premium_monthly"|"premium_yearly"</td><td class="col-note">Plan tipi</td></tr>
+            <tr><td class="col-name">revenue_cat_id</td><td class="col-type">VARCHAR</td><td class="col-const">nullable</td><td class="col-note">RevenueCat subscriber ID</td></tr>
+            <tr><td class="col-name">expires_at</td><td class="col-type">TIMESTAMP</td><td class="col-const">nullable</td><td class="col-note">Abonelik bitiş tarihi</td></tr>
+            <tr><td class="col-name">credits</td><td class="col-type">INTEGER</td><td class="col-const">default 0</td><td class="col-note">Pay-per-story kredi</td></tr>
+            <tr><td class="col-name">stories_this_month</td><td class="col-type">INTEGER</td><td class="col-const">default 0</td><td class="col-note">BR-003 yıllık TTS sayacı</td></tr>
+            <tr><td class="col-name">month_reset_at</td><td class="col-type">TIMESTAMP</td><td class="col-const">nullable</td><td class="col-note">Aylık sıfırlama tarihi</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <!-- ══════════════════════════════════
+       MİDDLEWARE & HATALAR
+  ══════════════════════════════════ -->
+  <div class="doc-section" id="middleware">
+    <div class="section-eyebrow">09</div>
+    <div class="section-title">Middleware & Hata Yönetimi</div>
+
+    <div class="ep-label">Auth Middleware — middleware/auth.ts</div>
+    <div class="code-block" style="margin-top:4px"><span class="cb-comment">// Her korumalı route'a eklenir</span>
+router.use(authMiddleware);
+
+<span class="cb-key">function</span> authMiddleware(req, res, next) {
+  <span class="cb-key">const</span> token = req.headers.authorization?.split(<span class="cb-str">' '</span>)[<span class="cb-num">1</span>];
+  <span class="cb-key">if</span> (!token) <span class="cb-key">return</span> res.status(<span class="cb-num">401</span>).json({ error: <span class="cb-str">'UNAUTHORIZED'</span> });
+
+  <span class="cb-key">try</span> {
+    req.user = jwt.verify(token, process.env.JWT_SECRET);
+    next();
+  } <span class="cb-key">catch</span> {
+    res.status(<span class="cb-num">401</span>).json({ error: <span class="cb-str">'INVALID_TOKEN'</span> });
+  }
+}</div>
+
+    <div class="ep-label" style="margin-top:20px">Hata Kodları</div>
+    <div id="errors" style="border:1px solid var(--border);border-radius:8px;overflow:hidden;margin-top:8px">
+      <table class="schema-table">
+        <thead><tr><th>HTTP</th><th>Hata Kodu</th><th>Açıklama</th></tr></thead>
+        <tbody>
+          <tr><td><span class="tag tag-red">401</span></td><td class="col-name">UNAUTHORIZED</td><td class="col-note">Token eksik</td></tr>
+          <tr><td><span class="tag tag-red">401</span></td><td class="col-name">INVALID_TOKEN</td><td class="col-note">Token geçersiz veya süresi dolmuş</td></tr>
+          <tr><td><span class="tag tag-red">403</span></td><td class="col-name">FORBIDDEN</td><td class="col-note">Başka kullanıcının kaynağına erişim</td></tr>
+          <tr><td><span class="tag" style="background:rgba(210,153,34,.12);color:var(--patch)">400</span></td><td class="col-name">VALIDATION_ERROR</td><td class="col-note">Zod şema hatası — detaylar body'de</td></tr>
+          <tr><td><span class="tag tag-red">404</span></td><td class="col-name">NOT_FOUND</td><td class="col-note">Kayıt bulunamadı</td></tr>
+          <tr><td><span class="tag tag-red">403</span></td><td class="col-name">AUDIO_NOT_AVAILABLE</td><td class="col-note">Ücretsiz plan — TTS yok (BR-003)</td></tr>
+          <tr><td><span class="tag tag-red">403</span></td><td class="col-name">AUDIO_LIMIT_REACHED</td><td class="col-note">Yıllık plan 20/ay limitini aştı (BR-003)</td></tr>
+          <tr><td><span class="tag tag-red">403</span></td><td class="col-name">INSUFFICIENT_CREDITS</td><td class="col-note">Kredi yetersiz</td></tr>
+          <tr><td><span class="tag tag-red">500</span></td><td class="col-name">CLAUDE_ERROR</td><td class="col-note">Claude API hatası</td></tr>
+          <tr><td><span class="tag tag-red">500</span></td><td class="col-name">TTS_ERROR</td><td class="col-note">OpenAI TTS hatası</td></tr>
+          <tr><td><span class="tag tag-red">500</span></td><td class="col-name">S3_ERROR</td><td class="col-note">AWS S3 hatası</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+
+  <!-- ══════════════════════════════════
+       DEPLOY
+  ══════════════════════════════════ -->
+  <div class="doc-section" id="deploy">
+    <div class="section-eyebrow">10</div>
+    <div class="section-title">Render Deploy</div>
+    <div class="section-desc">Render Free Tier üzerinde çalışır. 15 dakika inaktiflik sonrası sleep moduna girer, ilk istek ~30 saniye gecikir.</div>
+
+    <div class="ep-label" style="margin-top:16px">render.yaml</div>
+    <div class="code-block"><span class="cb-key">services</span>:
+  - <span class="cb-key">type</span>: web
+    <span class="cb-key">name</span>: masalai-backend
+    <span class="cb-key">env</span>: node
+    <span class="cb-key">buildCommand</span>: <span class="cb-str">"npm install && npx prisma generate && npm run build"</span>
+    <span class="cb-key">startCommand</span>: <span class="cb-str">"npm start"</span>
+    <span class="cb-key">healthCheckPath</span>: <span class="cb-str">"/health"</span></div>
+
+    <div class="ep-label" style="margin-top:16px">Deploy Adımları</div>
+    <div class="flow-wrap">
+      <div class="flow">
+        <div class="flow-step"><div class="flow-box fb-blue">git push</div><div class="flow-label">main branch</div></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><div class="flow-box">npm install</div><div class="flow-label">bağımlılıklar</div></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><div class="flow-box">prisma generate</div><div class="flow-label">client üret</div></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><div class="flow-box">tsc build</div><div class="flow-label">TypeScript derle</div></div>
+        <div class="flow-arrow">→</div>
+        <div class="flow-step"><div class="flow-box fb-green">npm start</div><div class="flow-label">canlı</div></div>
+      </div>
+    </div>
+
+    <div class="info-box ib-gold" style="margin-top:16px">
+      <span class="ib-icon">💡</span>
+      <span><strong>Sleep modunu önlemek için:</strong> UptimeRobot veya benzeri bir servis ile <code style="font-family:var(--mono)">https://masalai-backend.onrender.com/health</code> endpoint'ine her 10 dakikada bir ping atılması önerilir.</span>
+    </div>
+
+    <div class="ep-label" style="margin-top:16px">Migration Komutu</div>
+    <div class="code-block"><span class="cb-comment"># İlk kurulum — Supabase direct connection üzerinden</span>
+DATABASE_URL=$DIRECT_URL npx prisma migrate deploy
+
+<span class="cb-comment"># Seed (opsiyonel)</span>
+npx prisma db seed</div>
+  </div>
+
+  <!-- Footer -->
+  <div style="margin-top:48px;padding-top:24px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:gap">
+    <div style="font-size:12px;color:var(--muted)">MasalAI Backend Dokümantasyonu · v2.0</div>
+    <div style="display:flex;gap:12px">
+      <a href="../index.html" style="font-size:12px;color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:5px">← Proje Sunumu</a>
+      <a href="https://masalai-backend.onrender.com/api/docs" target="_blank" style="font-size:12px;color:var(--post);text-decoration:none">Swagger UI ↗</a>
+    </div>
+  </div>
+</main>
+
+<!-- Mobile toggle -->
+<button class="mob-toggle" onclick="toggleSidebar()" id="mob-toggle">☰</button>
+
+<script>
+  // Endpoint toggle
+  function toggleEndpoint(header) {
+    const card = header.parentElement;
+    card.classList.toggle('open');
+  }
+
+  // Sidebar highlight on scroll
+  const sections = document.querySelectorAll('.doc-section[id], .endpoint-card[id]');
+  const navItems = document.querySelectorAll('.nav-item');
+
+  function updateActive() {
+    let current = '';
+    sections.forEach(s => {
+      if (window.scrollY >= s.offsetTop - 80) current = s.id;
+    });
+    navItems.forEach(item => {
+      const href = item.getAttribute('href');
+      item.classList.toggle('active', href === '#' + current);
+    });
+  }
+  window.addEventListener('scroll', updateActive, { passive: true });
+
+  // Mobile sidebar
+  function toggleSidebar() {
+    const sb = document.getElementById('sidebar');
+    const btn = document.getElementById('mob-toggle');
+    sb.classList.toggle('open');
+    btn.textContent = sb.classList.contains('open') ? '✕' : '☰';
+  }
+
+  document.addEventListener('click', e => {
+    const sb = document.getElementById('sidebar');
+    const btn = document.getElementById('mob-toggle');
+    if (sb.classList.contains('open') && !sb.contains(e.target) && !btn.contains(e.target)) {
+      sb.classList.remove('open');
+      btn.textContent = '☰';
+    }
+  });
+</script>
+</body>
+</html>
